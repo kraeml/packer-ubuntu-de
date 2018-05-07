@@ -1,7 +1,7 @@
 ---
 language: bash
 sudo: require
-dist: trusty
+dist: xenial
 before_install:
   # Install Ansible repository.
   - sudo apt -y update && sudo apt-get -y upgrade
@@ -11,3 +11,5 @@ before_install:
   # Install Ansible.
   - sudo apt -y update
   - sudo apt -y install ansible
+script:
+  - ansible-playbook --syntax-check check_box.yml
