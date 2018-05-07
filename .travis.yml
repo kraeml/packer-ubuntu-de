@@ -7,6 +7,9 @@ before_install:
   - sudo apt -y update && sudo apt-get -y upgrade
   - sudo apt -y install -y software-properties-common
   - sudo apt-add-repository -y ppa:ansible/ansible
+  - wget https://releases.hashicorp.com/packer/1.2.3/packer_1.2.3_linux_amd64.zip
+  - unzip packer_1.2.3_linux_amd64.zip -d packer
+  - ./packer --version
 
   # Install Ansible.
   - sudo apt -y update
