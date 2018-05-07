@@ -1,6 +1,7 @@
 ---
 language: bash
-sudo: enable
+sudo: require
+dist: trusty
 before_install:
   # Install Ansible repository.
   - sudo apt -y update && sudo apt-get -y upgrade
