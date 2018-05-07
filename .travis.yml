@@ -12,4 +12,4 @@ before_install:
   - sudo apt -y update
   - sudo apt -y install ansible
 script:
-  - ansible-playbook --syntax-check check_box.yml
+  - ansible-playbook -i localhost, --syntax-check check_box.yml
