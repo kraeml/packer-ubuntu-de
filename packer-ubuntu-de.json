@@ -1,0 +1,35 @@
+{
+  "builders": [
+		{
+			"type": "virtualbox-ovf",
+			"source_path": "virtualbox-ovf/box.ovf",
+			"ssh_username": "vagrant",
+			"ssh_password": "vagrant",
+			"shutdown_command": "echo 'vagrant' | sudo -S shutdown -P now"
+    }
+  ],
+  "provisioners": [
+    {
+      "type": "shell",
+      "execute_command": "echo 'vagrant' | {{.Vars}} sudo -S -E bash '{{.Path}}'",
+      "script": "scripts/ansible.sh"
+    },
+    {
+      "type": "ansible-local",
+      "playbook_file": "ansible/main.yml",
+      "galaxy_file": "requirements.yml"
+    },
+    {
+      "type": "shell",
+      "execute_command": "echo 'vagrant' | {{.Vars}} sudo -S -E bash '{{.Path}}'",
+      "script": "scripts/cleanup.sh"
+    }
+  ],
+  "post-processors": [
+    {
+      "output": "builds/{{.Provider}}-ubuntu1804.box",
+      "type": "vagrant",
+      "keep_input_artifact": true
+    }
+  ]
+}

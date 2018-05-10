@@ -28,3 +28,13 @@
       command: "ls -ld {{box_ovf_path}}"
       args:
         creates: "{{box_ovf_path}}"
+
+    - name: Ensure virtualbox-ovf directory exists
+      file:
+        path: ./virtualbox-ovf
+        state: directory
+
+    - name: "Copy virtualbox files"
+      copy:
+        dest: ./virtualbox-ovf
+        src: "{{box_ovf_path}}"
