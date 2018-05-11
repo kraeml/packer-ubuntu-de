@@ -5,6 +5,7 @@
 			"source_path": "virtualbox-ovf/box.ovf",
 			"ssh_username": "vagrant",
 			"ssh_password": "vagrant",
+      "headless": true,
 			"shutdown_command": "echo 'vagrant' | sudo -S shutdown -P now"
     }
   ],
@@ -12,7 +13,13 @@
     {
       "type": "shell",
       "execute_command": "echo 'vagrant' | {{.Vars}} sudo -S -E bash '{{.Path}}'",
-      "script": "scripts/ansible.sh"
+      "script": "scripts/ansible.sh",
+      "expect_disconnect": true
+    },
+    {
+      "type": "shell",
+      "inline": ["sleep 60; echo Hello again"],
+      "expect_disconnect": true
     },
     {
       "type": "ansible-local",
@@ -26,10 +33,22 @@
     }
   ],
   "post-processors": [
-    {
-      "output": "builds/{{.Provider}}-ubuntu1804.box",
-      "type": "vagrant",
-      "keep_input_artifact": true
-    }
-  ]
+    [
+      {
+        "output": "builds/{{.Provider}}-ubuntu1804.box",
+        "type": "vagrant",
+        "keep_input_artifact": true
+      },
+      {
+        "type": "vagrant-cloud",
+        "box_tag": "kraeml/ubuntu_1804_de",
+        "access_token": "{{user `cloud_token`}}",
+        "version": "{{user `version`}}"
+      }
+    ]
+  ],
+  "variables": {
+    "cloud_token": "{{ env `ATLAS_TOKEN` }}",
+    "version": "{{isotime \"06.01.02\"}}"
+  },
 }
