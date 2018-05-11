@@ -3,3 +3,4 @@ builds/
 output-virtualbox-ovf/
 virtualbox-ovf/
 .vagrant/
+bin/packer
