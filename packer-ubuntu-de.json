@@ -40,6 +40,19 @@
         "keep_input_artifact": true
       },
       {
+        "inline": [
+          "make test_newBox"
+        ],
+        "type": "shell-local"
+      }
+    ],
+    [
+      {
+        "output": "builds/{{.Provider}}-ubuntu1804.box",
+        "type": "vagrant",
+        "keep_input_artifact": true
+      },
+      {
         "type": "vagrant-cloud",
         "box_tag": "kraeml/ubuntu_1804_de",
         "access_token": "{{user `cloud_token`}}",
@@ -49,6 +62,6 @@
   ],
   "variables": {
     "cloud_token": "{{ env `ATLAS_TOKEN` }}",
-    "version": "{{isotime \"06.01.02\"}}"
+    "version": "{{isotime \"06.01.0215\"}}"
   }
 }
