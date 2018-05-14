@@ -33,6 +33,6 @@
   tasks:
     - name: "Install german packages"
       apt:
-        name: "item"
+        name: "{{item}}"
       with_items:
         - manpages-de
