@@ -20,7 +20,7 @@
         - locale_de
     - role: tersmitten.timezone
       become: yes
-      timezone_zone: "Etc/UTC"
+      timezone_zone: "Europe/Berlin"
       tags:
         - locale_de
     - role: gantsign.keyboard
@@ -31,6 +31,8 @@
         - locale_de
 
   tasks:
-    - name: "Hallo Welt"
-      debug:
-        msg: "Hallo Welt!"
+    - name: "Install german packages"
+      apt:
+        name: "item"
+      with_items:
+        - manpages-de

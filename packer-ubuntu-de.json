@@ -50,5 +50,5 @@
   "variables": {
     "cloud_token": "{{ env `ATLAS_TOKEN` }}",
     "version": "{{isotime \"06.01.02\"}}"
-  },
+  }
 }
