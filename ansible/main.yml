@@ -1,0 +1,39 @@
+---
+- hosts: all
+  #become: yes
+  gather_facts: yes
+  roles:
+    - role: tersmitten.locales
+      become: yes
+      locales_present:
+        - en_US.UTF-8
+        - de_DE.UTF-8
+      locales_language_packs_present:
+        - language-pack-en
+        - language-pack-en-base
+        - language-pack-de
+        - language-pack-de-base
+      locales_default:
+        lang: de_DE.UTF-8
+        # language: de_DE.UTF-8
+      tags:
+        - locale_de
+    - role: tersmitten.timezone
+      become: yes
+      timezone_zone: "Europe/Berlin"
+      tags:
+        - locale_de
+    - role: gantsign.keyboard
+      become: yes
+      keyboard_model: pc105
+      keyboard_layout: de
+      tags:
+        - locale_de
+
+  tasks:
+    - name: "Install german packages"
+      become: yes
+      apt:
+        name: "{{item}}"
+      with_items:
+        - manpages-de
