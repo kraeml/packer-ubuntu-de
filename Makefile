@@ -27,4 +27,4 @@ vagrant_box_clean:
 	vagrant box remove --force file://builds/virtualbox-ubuntu1804.box || true
 
 
-all: rm_box builds/virtualbox-ubuntu1804.box test_newBox vagrant_box_clean
+all: rm_box builds/virtualbox-ubuntu1804.box vagrant_box_clean
