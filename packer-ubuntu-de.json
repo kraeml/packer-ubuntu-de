@@ -24,7 +24,11 @@
     {
       "type": "ansible-local",
       "playbook_file": "ansible/main.yml",
-      "galaxy_file": "requirements.yml"
+      "galaxy_file": "requirements.yml",
+      "extra_arguments": [
+          "--skip-tags={{ user `ansible_skip_tags` }}",
+          "--user=vagrant"
+      ]
     },
     {
       "type": "shell",
@@ -58,10 +62,23 @@
         "access_token": "{{user `cloud_token`}}",
         "version": "{{user `version`}}"
       }
+    ],
+    [
+      {
+        "environment_vars": [
+          "VERSION={{user `version`}}"
+        ],
+        "inline_shebang": "/bin/bash -e",
+        "inline": [
+          "echo $VERSION > version"
+        ],
+        "type": "shell-local"
+      }
     ]
   ],
   "variables": {
     "cloud_token": "{{ env `ATLAS_TOKEN` }}",
-    "version": "{{isotime \"06.01.0215\"}}"
+    "version": "{{isotime \"06.01.0215\"}}",
+    "ansible_skip_tags": "ansible,not_packer,todo"
   }
 }
