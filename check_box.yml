@@ -7,20 +7,20 @@
     box_version: "1.0.1"
     box_ovf_path: "{{ansible_user_dir}}/.vagrant.d/boxes/{{box_developer}}-VAGRANTSLASH-{{box_lts}}/{{box_version}}/virtualbox/"
     s3_bucket_name: "kraeml-vagrant-boxen"
-    region: "eu-central-1"
+    aws_region: "eu-central-1"
   pre_tasks:
     - name: Create s3 bucket
       s3_bucket:
         name: "{{s3_bucket_name}}"
         region: "{{aws_region}}"
-        versioning: yes
+        #versioning: yes
         #aws_access_key: "{{aws_access_key}}"
         #aws_secret_key: "{{aws_secret_key}}"
       register: s3_url
 
     - name: Display s3 url
       debug: var=s3_url
-      
+
   tasks:
     - name: "Check box {{box_name}} is in version {{box_version}}"
       command: "vagrant box add --box-version {{box_version}} {{box_name}}"
