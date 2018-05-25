@@ -2,7 +2,7 @@ file=../ENV_VARS
 token=`cat $(file)`
 export ATLAS_TOKEN = $(token)
 builds/virtualbox-ubuntu1804.box: virtualbox-ovf/box.ovf
-	packer build -force packer-ubuntu-de.json
+	packer build -force -machine-readable packer-ubuntu-de.json
 	vagrant box remove --force file://builds/virtualbox-ubuntu1804.box || true
 
 virtualbox-ovf/box.ovf:
