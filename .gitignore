@@ -5,3 +5,4 @@ virtualbox-ovf/
 .vagrant/
 bin/packer
 version
+*-no-cloud.json
