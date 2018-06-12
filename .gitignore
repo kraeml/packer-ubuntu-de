@@ -6,3 +6,4 @@ virtualbox-ovf/
 bin/packer
 version
 *-no-cloud.json
+version-ubuntu_1804_de*

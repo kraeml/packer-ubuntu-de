@@ -1,13 +1,9 @@
 ---
 - hosts: localhost
-  vars:
-    box_developer: "geerlingguy"
-    box_lts: "ubuntu1804"
-    box_name: "{{box_developer}}/{{box_lts}}"
-    box_version: "1.0.1"
-    box_ovf_path: "{{ansible_user_dir}}/.vagrant.d/boxes/{{box_developer}}-VAGRANTSLASH-{{box_lts}}/{{box_version}}/virtualbox/"
-
   tasks:
+    - include_vars: # This module allows you to specify the 'file' option directly without any other options. There is no 'free-form' option, this is just an indicator, see example below.
+      args:
+        file: "{{BASE}}.yml"
     - name: "Check box {{box_name}} is in version {{box_version}}"
       command: "vagrant box add --box-version {{box_version}} {{box_name}}"
       register: box_info
@@ -31,10 +27,10 @@
 
     - name: Ensure virtualbox-ovf directory exists
       file:
-        path: ./virtualbox-ovf
+        path: "./virtualbox-ovf/{{BASE}}"
         state: directory
 
     - name: "Copy virtualbox files"
       copy:
-        dest: ./virtualbox-ovf
+        dest: "./virtualbox-ovf/{{BASE}}"
         src: "{{box_ovf_path}}"

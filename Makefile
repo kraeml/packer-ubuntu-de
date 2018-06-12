@@ -1,36 +1,38 @@
 file=../ENV_VARS
 token=`cat $(file)`
 export ATLAS_TOKEN = $(token)
-# directory is the name of json-file
-directory = $$(basename $$(pwd))
+export VAGRANT_VAGRANTFILE = Vagrantfile-$(BASE)
+
+ifndef BASE
+BASE = ubuntu_1804_de
+endif
 
 ifndef NO_CLOUD
-FILE_NAME = $(directory)
+FILE_NAME = packer-ubuntu_1804_de
 else
-FILE_NAME = $(directory)-no-cloud
+FILE_NAME = packer-ubuntu_1804_de-no-cloud
 endif
 
 
 no-cloud:
-	cat $(directory).json | jq 'del(."post-processors"[1])' > $(directory)-no-cloud.json
+	cat packer-ubuntu_1804_de.json | jq 'del(."post-processors"[1])' > packer-ubuntu_1804_de-no-cloud.json
 
-builds/virtualbox-ubuntu1804.box: virtualbox-ovf/box.ovf no-cloud
-	packer build -force $(FILE_NAME).json
-	vagrant box remove --force file://builds/virtualbox-ubuntu1804.box || true
+build: virtualbox-ovf/$(BASE)/box.ovf no-cloud
+	packer build -force -var "box_name=$(BASE)" $(FILE_NAME).json
 
-virtualbox-ovf/box.ovf:
-	ansible-playbook check_box.yml
+virtualbox-ovf/$(BASE)/box.ovf:
+	ansible-playbook --extra-vars="BASE=$(BASE)" check_box.yml
 
 clean_all: rm_box rm_no_cloud
-	rm virtualbox-ovf/*
+	rm virtualbox-ovf/$(BASE)/* 2>/dev/null || true
 
 rm_box:
-	rm builds/virtualbox-ubuntu1804.box || true
+	rm builds/virtualbox-$(BASE).box 2>/dev/null || true
 
 rm_no_cloud:
-	rm packer-ubuntu-de-devops-no-cloud.json || true
+	rm packer-$(BASE)-devops-no-cloud.json 2>/dev/null || true
 
-test:
+test_inspec:
 	vagrant up
 	inspec exec -t ssh://vagrant@$$(vagrant ssh-config | grep HostName | cut -d 'e' -f 2 | cut -d ' ' -f 2):$$(vagrant ssh-config | grep Port | cut -d 't' -f 2 | cut -d ' ' -f 2) -i $$(vagrant ssh-config | grep IdentityFile | cut -d ' ' -f 4) --password vagrant inspec_test/locale_de/
 
@@ -38,11 +40,12 @@ test_devsec:
 	vagrant up
 	inspec exec -t ssh://vagrant@$$(vagrant ssh-config | grep HostName | cut -d 'e' -f 2 | cut -d ' ' -f 2):$$(vagrant ssh-config | grep Port | cut -d 't' -f 2 | cut -d ' ' -f 2) -i $$(vagrant ssh-config | grep IdentityFile | cut -d ' ' -f 4) --password vagrant https://github.com/dev-sec/linux-baseline
 
-test_newBox: vagrant_box_clean test
+test: vagrant_box_clean test_inspec
+	vagrant destroy --force 2>/dev/null || true
 
 vagrant_box_clean:
-	vagrant destroy --force || true
-	vagrant box remove --force file://builds/virtualbox-ubuntu1804.box || true
+	vagrant destroy --force 2>/dev/null || true
+	vagrant box remove --force file://builds/virtualbox-$(BASE).box 2>/dev/null || true
 
 
-all: rm_box builds/virtualbox-ubuntu1804.box vagrant_box_clean
+all: clean_all build test
