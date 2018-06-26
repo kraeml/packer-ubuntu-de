@@ -30,7 +30,7 @@ rm_box:
 	rm builds/virtualbox-$(BASE).box 2>/dev/null || true
 
 rm_no_cloud:
-	rm packer-$(BASE)-devops-no-cloud.json 2>/dev/null || true
+	rm packer-ubuntu_1804_de-no-cloud.json 2>/dev/null || true
 
 test_inspec:
 	vagrant up

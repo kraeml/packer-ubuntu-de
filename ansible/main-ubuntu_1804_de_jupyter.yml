@@ -1,0 +1,10 @@
+---
+- hosts: all
+  #become: yes
+  gather_facts: yes
+  roles:
+    - role: kraeml.jupyter
+      become: yes
+      tags:
+        - python-dev
+        - jupyter
