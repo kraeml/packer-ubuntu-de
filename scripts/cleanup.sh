@@ -1,4 +1,7 @@
 #!/bin/bash -eux
+if [[ -f /etc/apt/apt.conf.d/01proxy ]]; then
+  rm /etc/apt/apt.conf.d/01proxy
+fi
 echo "==> Recording box generation date"
 date > /etc/vagrant_box_build_date
 

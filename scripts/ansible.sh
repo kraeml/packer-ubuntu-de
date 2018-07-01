@@ -1,6 +1,10 @@
 #!/bin/bash -eux
 
 # Install Ansible repository.
+tee "/etc/apt/apt.conf.d/01proxy" > "/dev/null" <<EOF
+Acquire::http { Proxy "http://michl-laptop.fritz.box:3142"; };
+Acquire::https { Proxy "https://"; };
+EOF
 if ansible --version ; then
 	apt-get -y update
 else
