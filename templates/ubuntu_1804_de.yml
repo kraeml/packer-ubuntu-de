@@ -1,0 +1,5 @@
+box_developer: "geerlingguy"
+box_lts: "ubuntu1804"
+box_name: "{{box_developer}}/{{box_lts}}"
+box_version: "1.0.1"
+box_ovf_path: "{{ansible_user_dir}}/.vagrant.d/boxes/{{box_developer}}-VAGRANTSLASH-{{box_lts}}/{{box_version}}/virtualbox/"

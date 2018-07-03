@@ -23,8 +23,8 @@
     },
     {
       "type": "ansible-local",
-      "playbook_file": "ansible/main-{{user `box_name`}}.yml",
-      "galaxy_file": "requirements-{{user `box_name`}}.yml",
+      "playbook_file": "{{user `playbook`}}",
+      "galaxy_file": "{{user `requirements`}}",
       "extra_arguments": [
           "--skip-tags={{ user `ansible_skip_tags` }}",
           "--user=vagrant"
@@ -34,6 +34,16 @@
       "type": "shell",
       "execute_command": "echo 'vagrant' | {{.Vars}} sudo -S -E bash '{{.Path}}'",
       "script": "scripts/cleanup.sh"
+    },
+    {
+      "environment_vars": [
+        "VERSION={{user `version`}}"
+      ],
+      "inline_shebang": "/bin/bash -e",
+      "inline": [
+        "echo $VERSION > version"
+      ],
+      "type": "shell-local"
     }
   ],
   "post-processors": [
@@ -41,6 +51,7 @@
       {
         "output": "builds/{{.Provider}}-{{user `box_name`}}.box",
         "type": "vagrant",
+        "include": ["version"],
         "keep_input_artifact": true
       },
       {
@@ -64,6 +75,7 @@
       {
         "output": "builds/{{.Provider}}-{{user `box_name`}}.box",
         "type": "vagrant",
+        "include": ["version-{{user `box_name`}}"],
         "keep_input_artifact": true
       },
       {
@@ -84,6 +96,8 @@
     "version": "{{isotime \"06.01.0215\"}}",
     "ansible_skip_tags": "ansible,not_packer,todo",
     "my-bucket": "kraeml-vagrant-boxen",
-    "box_organization": "kraeml"
+    "box_organization": "kraeml",
+    "requirements": "ansible/requirements-ubuntu_1804_de.yml",
+    "playbook": "ansible/main-ubuntu_1804_de.yml"
   }
 }
