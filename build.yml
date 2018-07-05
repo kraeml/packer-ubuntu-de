@@ -1,13 +1,14 @@
 - include_tasks: check_box_tasks.yml
+
 - name: ToDo skript is often here. Could be better
   make:
     chdir: ./
     target: no-cloud
 
-- name: Create Vagrantfile for {{BASE}}
+- name: Create Vagrantfile-{{BASE}}
   template:
-    dest: Vagrantfile-{{BASE}}
-    src: ansible/Vagrantfile-ubuntu_1804_de.j2
+    dest: "builds/Vagrantfile-{{BASE}}"
+    src: templates/Vagrantfile-ubuntu_1804_de.j2
 
 - name: build {{BASE}}
   # Use BASE NOT box_name! The name box_name is double.
@@ -23,4 +24,4 @@
     chdir: ./
   environment:
     PACKER_LOG: 1
-    PACKER_LOG_PATH: ./packer.log
+    PACKER_LOG_PATH: ./log/packer.log

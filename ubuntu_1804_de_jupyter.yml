@@ -1,5 +1,0 @@
-box_developer: "kraeml"
-box_lts: "ubuntu_1804_de"
-box_name: "{{box_developer}}/{{box_lts}}"
-box_version: "{{lookup('file', 'version-{{box_lts}}') }}"
-box_ovf_path: "{{ansible_user_dir}}/.vagrant.d/boxes/file:-VAGRANTSLASH--VAGRANTSLASH-builds-VAGRANTSLASH-virtualbox-{{box_lts}}.box/0/virtualbox/"

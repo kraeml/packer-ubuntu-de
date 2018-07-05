@@ -2,7 +2,7 @@
   "builders": [
 		{
 			"type": "virtualbox-ovf",
-			"source_path": "virtualbox-ovf/{{user `box_name`}}/box.ovf",
+			"source_path": "virtualbox-ovf/pre_{{user `box_name`}}/box.ovf",
 			"ssh_username": "vagrant",
 			"ssh_password": "vagrant",
       "headless": true,
@@ -18,7 +18,7 @@
     },
     {
       "type": "shell",
-      "inline": ["sleep 60; echo Hello again"],
+      "inline": ["sleep 30; echo Hello again"],
       "expect_disconnect": true
     },
     {
@@ -41,7 +41,7 @@
       ],
       "inline_shebang": "/bin/bash -e",
       "inline": [
-        "echo $VERSION > version"
+        "echo $VERSION > builds/version"
       ],
       "type": "shell-local"
     }
@@ -51,7 +51,7 @@
       {
         "output": "builds/{{.Provider}}-{{user `box_name`}}.box",
         "type": "vagrant",
-        "include": ["version"],
+        "include": ["builds/version"],
         "keep_input_artifact": true
       },
       {
@@ -66,7 +66,7 @@
         ],
         "inline_shebang": "/bin/bash -e",
         "inline": [
-          "echo $VERSION > version-{{ user `box_name` }}"
+          "echo $VERSION > builds/version-{{ user `box_name` }}"
         ],
         "type": "shell-local"
       }
@@ -75,7 +75,7 @@
       {
         "output": "builds/{{.Provider}}-{{user `box_name`}}.box",
         "type": "vagrant",
-        "include": ["version-{{user `box_name`}}"],
+        "include": ["builds/version-{{user `box_name`}}"],
         "keep_input_artifact": true
       },
       {

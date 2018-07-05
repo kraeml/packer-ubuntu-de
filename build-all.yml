@@ -17,11 +17,17 @@
           dependencies:
             box_developer: "kraeml"
             box_lts: "ubuntu_1804_de"
-            box_version: "{{lookup('file', 'version-ubuntu_1804_de') }}"
+            # box_version: "{{lookup('file', 'builds/version-ubuntu_1804_de') }}"
             requirements: "requirements-ubuntu_1804_de_jupyter.yml"
             playbook: "main-ubuntu_1804_de_jupyter.yml"
             # box_ovf_path: "file:-VAGRANTSLASH--VAGRANTSLASH-builds-VAGRANTSLASH-virtualbox-ubuntu_1804_de.box/0/virtualbox/"
-
+        - name: de_xdesktop
+          dependencies:
+            box_developer: "kraeml"
+            box_lts: "ubuntu_1804_de"
+            # box_version: "{{lookup('file', 'builds/version-ubuntu_1804_de') }}"
+            requirements: "requirements-ubuntu_1804_de_xdesktop.yml"
+            playbook: "main-ubuntu_1804_de_xdesktop.yml"
 
     tasks:
       - name: Create virtualbox-ubuntu_1804_xy
@@ -30,12 +36,21 @@
           verbosity: 1
         with_items: "{{ubuntu_1804}}"
 
+      - name: Ensure builds/version exists
+        file:
+          path: builds/version
+
+      - name: Ensure builds/version for pre_box exists
+        file:
+          path: "builds/version-{{item.dependencies.box_lts}}"
+        with_items: "{{ubuntu_1804}}"
+
       - include_tasks: build.yml
         BASE: "ubuntu_1804_{{item.name}}"
         box_developer: "{{item.dependencies.box_developer}}"
         box_organization: "{{item.box_organization | default ('kraeml')}}"
         box_lts: "{{item.dependencies.box_lts}}"
-        box_version: "{{item.dependencies.box_version}}"
+        box_version: "{{item.dependencies.box_version | default (lookup('file', 'builds/version-{{box_lts}}'))}}"
         box_name: "{{box_organization}}/ubuntu_1804_{{item.name}}"
         requirements: "ansible/{{item.dependencies.requirements}}"
         playbook: "ansible/{{item.dependencies.playbook}}"

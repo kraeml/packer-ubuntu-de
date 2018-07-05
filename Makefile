@@ -1,7 +1,7 @@
 file=../ENV_VARS
 token=`cat $(file)`
 export ATLAS_TOKEN = $(token)
-export VAGRANT_VAGRANTFILE = Vagrantfile-$(BASE)
+export VAGRANT_VAGRANTFILE = builds/Vagrantfile-$(BASE)
 
 ifndef BASE
 BASE = ubuntu_1804_de
@@ -24,7 +24,9 @@ virtualbox-ovf/$(BASE)/box.ovf:
 	ansible-playbook --extra-vars="BASE=$(BASE)" check_box.yml
 
 clean_all: rm_box rm_no_cloud
-	rm virtualbox-ovf/$(BASE)/* 2>/dev/null || true
+	# Now Symlink
+	# ToDo remove
+	# rm virtualbox-ovf/$(BASE)/* 2>/dev/null || true
 
 rm_box:
 	rm builds/virtualbox-$(BASE).box 2>/dev/null || true
