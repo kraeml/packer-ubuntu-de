@@ -35,9 +35,9 @@
         get_checksum: yes
       register: test_file_check_1
 
-    - name: "check_box_tasks: builds/version-{{box_lts}} check"
+    - name: "check_box_tasks: builds-config/version-{{box_lts}} check"
       stat:
-        path: "builds/version-{{box_lts}}"
+        path: "builds-config/version-{{box_lts}}"
         get_checksum: yes
       register: test_file_check_2
 

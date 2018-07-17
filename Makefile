@@ -1,7 +1,7 @@
 file=../ENV_VARS
 token=`cat $(file)`
 export ATLAS_TOKEN = $(token)
-export VAGRANT_VAGRANTFILE = builds/Vagrantfile-$(BASE)
+export VAGRANT_VAGRANTFILE = builds-config/Vagrantfile-$(BASE)
 
 ifndef BASE
 BASE = ubuntu_1804_de

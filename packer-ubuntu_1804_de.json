@@ -46,7 +46,7 @@
       ],
       "inline_shebang": "/bin/bash -e",
       "inline": [
-        "echo $VERSION > builds/version"
+        "echo $VERSION > builds-config/version"
       ],
       "type": "shell-local"
     }
@@ -56,7 +56,7 @@
       {
         "output": "builds/{{.Provider}}-{{user `box_name`}}.box",
         "type": "vagrant",
-        "include": ["builds/version"],
+        "include": ["builds-config/version"],
         "keep_input_artifact": true
       },
       {
@@ -75,7 +75,7 @@
         ],
         "inline_shebang": "/bin/bash -e",
         "inline": [
-          "echo $VERSION > builds/version-{{ user `box_name` }}"
+          "echo $VERSION > builds-config/version-{{ user `box_name` }}"
         ],
         "type": "shell-local"
       }
@@ -84,7 +84,7 @@
       {
         "output": "builds/{{.Provider}}-{{user `box_name`}}.box",
         "type": "vagrant",
-        "include": ["builds/version-{{user `box_name`}}"],
+        "include": ["builds-config/version-{{user `box_name`}}"],
         "keep_input_artifact": true
       },
       {

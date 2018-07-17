@@ -10,10 +10,25 @@
     chdir: ./
     target: no-cloud
 
-- name: "build: Create Vagrantfile-{{BASE}}"
+- name: Ensure builds directory vor {{BASE}} exists
+  file:
+    path: "{{BASE}}"
+    state: directory
+
+- name: "build: Create builds Vagrantfile-{{BASE}}"
+  vars:
+    BUILD_PATH: "{{foo.vagrant_path}}"
   template:
-    dest: "builds/Vagrantfile-{{BASE}}"
+    dest: "{{foo.dest}}/Vagrantfile-{{BASE}}"
     src: templates/Vagrantfile-ubuntu_1804_de.j2
+  # ToDo loop_control set for outer_loop
+  loop_control:
+    loop_var: foo
+  with_items:
+    - vagrant_path: "builds/"
+      dest: "builds-config"
+    - vagrant_path: ""
+      dest: "builds"
 
 - name: "build: build {{BASE}}"
   # Use BASE NOT box_name! The name box_name is double.

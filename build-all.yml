@@ -12,15 +12,22 @@
           var: "{{item}}"
           verbosity: 1
         with_items: "{{ubuntu_1804}}"
-
-      - name: "build-all: Ensure builds/version exists"
+      - name: Ensure directories exists
         file:
-          path: builds/version
+          path: "{{item}}"
+          state: directory
+        with_items:
+          - builds
+          - builds-config
+
+      - name: "build-all: Ensure builds-config/version exists"
+        file:
+          path: builds-config/version
           state: touch
 
-      - name: "build-all: Ensure builds/version for pre_box exists"
+      - name: "build-all: Ensure builds-config/version for pre_box exists"
         file:
-          path: "builds/version-{{item.dependencies.box_lts}}"
+          path: "builds-config/version-{{item.dependencies.box_lts}}"
           state: touch
         with_items: "{{ubuntu_1804}}"
 
@@ -29,7 +36,7 @@
         box_developer: "{{item.dependencies.box_developer}}"
         box_organization: "{{item.box_organization | default ('kraeml')}}"
         box_lts: "{{item.dependencies.box_lts}}"
-        box_version: "{{item.dependencies.box_version | default (lookup('file', 'builds/version-{{box_lts}}'))}}"
+        box_version: "{{item.dependencies.box_version | default (lookup('file', 'builds-config/version-{{box_lts}}'))}}"
         box_name: "{{box_organization}}/ubuntu_1804_{{item.name}}"
         requirements: "ansible/{{item.dependencies.requirements}}"
         playbook: "ansible/{{item.dependencies.playbook}}"
