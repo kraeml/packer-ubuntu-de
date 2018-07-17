@@ -1,16 +1,21 @@
+- name: Start build info
+  debug:
+    msg: Build Box {{BASE}} depends on {{box_developer}}/{{box_lts}} in version {{box_version}}
+    verbosity: 1
+
 - include_tasks: check_box_tasks.yml
 
-- name: ToDo skript is often here. Could be better
+- name: "build: ToDo skript is often here. Could be better"
   make:
     chdir: ./
     target: no-cloud
 
-- name: Create Vagrantfile-{{BASE}}
+- name: "build: Create Vagrantfile-{{BASE}}"
   template:
     dest: "builds/Vagrantfile-{{BASE}}"
     src: templates/Vagrantfile-ubuntu_1804_de.j2
 
-- name: build {{BASE}}
+- name: "build: build {{BASE}}"
   # Use BASE NOT box_name! The name box_name is double.
   shell: >
     packer build -force

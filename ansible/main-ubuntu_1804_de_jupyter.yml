@@ -5,6 +5,8 @@
   roles:
     - role: kraeml.jupyter
       become: yes
+      # ToDo Now for all boxes not only for ina
+      jupyter_ijavascript: true
       tags:
         - python-dev
         - jupyter

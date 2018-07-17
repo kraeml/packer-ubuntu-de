@@ -1,0 +1,130 @@
+---
+  ovf_path: "{{ansible_user_dir}}/.vagrant.d/boxes/"
+  ubuntu_1804:
+    # DE for german language setup
+    - name: de
+      dependencies:
+        box_developer: "geerlingguy"
+        box_lts: "ubuntu1804"
+        box_version: "1.0.1"
+        box_ovf_path: "{{ovf_path}}geerlingguy-VAGRANTSLASH-ubuntu1804/1.0.1/virtualbox/"
+        requirements: "requirements-ubuntu_1804_de.yml"
+        playbook: "main-ubuntu_1804_de.yml"
+    - name: de_jupyter
+      dependencies:
+        box_developer: "kraeml"
+        box_lts: "ubuntu_1804_de"
+        requirements: "requirements-ubuntu_1804_de_jupyter.yml"
+        playbook: "main-ubuntu_1804_de_jupyter.yml"
+    - name: de_xdesktop
+      dependencies:
+        box_developer: "kraeml"
+        box_lts: "ubuntu_1804_de"
+        requirements: "requirements-ubuntu_1804_de_xdesktop.yml"
+        playbook: "main-ubuntu_1804_de_xdesktop.yml"
+    - name: de_jupyter_xdesktop
+      dependencies:
+        box_developer: "kraeml"
+        box_lts: "ubuntu_1804_de_jupyter"
+        requirements: "requirements-ubuntu_1804_de_xdesktop.yml"
+        playbook: "main-ubuntu_1804_de_xdesktop.yml"
+    # BASE with some packages eg. git install
+    - name: de_base
+      dependencies:
+        box_developer: "kraeml"
+        box_lts: "ubuntu_1804_de"
+        requirements: "requirements-ubuntu_1804_de_base.yml"
+        playbook: "main-ubuntu_1804_de_base.yml"
+    - name: de_base_jupyter
+      dependencies:
+        box_developer: "kraeml"
+        box_lts: "ubuntu_1804_de_base"
+        requirements: "requirements-ubuntu_1804_de_jupyter.yml"
+        playbook: "main-ubuntu_1804_de_jupyter.yml"
+    - name: de_base_xdesktop
+      dependencies:
+        box_developer: "kraeml"
+        box_lts: "ubuntu_1804_de_base"
+        requirements: "requirements-ubuntu_1804_de_xdesktop.yml"
+        playbook: "main-ubuntu_1804_de_xdesktop.yml"
+    - name: de_base_jupyter_xdesktop
+      dependencies:
+        box_developer: "kraeml"
+        box_lts: "ubuntu_1804_de_base_jupyter"
+        requirements: "requirements-ubuntu_1804_de_xdesktop.yml"
+        playbook: "main-ubuntu_1804_de_xdesktop.yml"
+    # INA for RDF lessons
+    - name: de_base_ina
+      dependencies:
+        box_developer: "kraeml"
+        box_lts: "ubuntu_1804_de_base"
+        requirements: "requirements-ubuntu_1804_de_ina.yml"
+        playbook: "main-ubuntu_1804_de_ina.yml"
+    - name: de_base_ina_jupyter
+      dependencies:
+        box_developer: "kraeml"
+        box_lts: "ubuntu_1804_de_base_ina"
+        requirements: "requirements-ubuntu_1804_de_jupyter.yml"
+        playbook: "main-ubuntu_1804_de_jupyter.yml"
+    - name: de_base_ina_xdesktop
+      dependencies:
+        box_developer: "kraeml"
+        box_lts: "ubuntu_1804_de_base_ina"
+        requirements: "requirements-ubuntu_1804_de_xdesktop.yml"
+        playbook: "main-ubuntu_1804_de_xdesktop.yml"
+    - name: de_base_ina_jupyter_xdesktop
+      dependencies:
+        box_developer: "kraeml"
+        box_lts: "ubuntu_1804_de_base_ina_jupyter"
+        requirements: "requirements-ubuntu_1804_de_xdesktop.yml"
+        playbook: "main-ubuntu_1804_de_xdesktop.yml"
+    # EXTENDED with lxc support
+    - name: de_extended
+      dependencies:
+        box_developer: "kraeml"
+        box_lts: "ubuntu_1804_de_base"
+        requirements: "requirements-ubuntu_1804_de_extended.yml"
+        playbook: "main-ubuntu_1804_de_extended.yml"
+    - name: de_extended_jupyter
+      dependencies:
+        box_developer: "kraeml"
+        box_lts: "ubuntu_1804_de_extended"
+        requirements: "requirements-ubuntu_1804_de_jupyter.yml"
+        playbook: "main-ubuntu_1804_de_jupyter.yml"
+    - name: de_extended_xdesktop
+      dependencies:
+        box_developer: "kraeml"
+        box_lts: "ubuntu_1804_de_extended"
+        requirements: "requirements-ubuntu_1804_de_xdesktop.yml"
+        playbook: "main-ubuntu_1804_de_xdesktop.yml"
+    - name: de_extended_jupyter_xdesktop
+      dependencies:
+        box_developer: "kraeml"
+        box_lts: "ubuntu_1804_de_extended_jupyter"
+        requirements: "requirements-ubuntu_1804_de_xdesktop.yml"
+        playbook: "main-ubuntu_1804_de_xdesktop.yml"
+    # ToDo DEVOPS with eg. ansible setup
+    - name: de_devops
+      dependencies:
+        box_developer: "kraeml"
+        box_lts: "ubuntu_1804_de_extended"
+        requirements: "requirements-ubuntu_1804_de_devops.yml"
+        playbook: "main-ubuntu_1804_de_devops.yml"
+    - name: de_devops_jupyter
+      dependencies:
+        box_developer: "kraeml"
+        box_lts: "ubuntu_1804_de_devops"
+        requirements: "requirements-ubuntu_1804_de_jupyter.yml"
+        playbook: "main-ubuntu_1804_de_jupyter.yml"
+    - name: de_devops_xdesktop
+      dependencies:
+        box_developer: "kraeml"
+        box_lts: "ubuntu_1804_de_devops"
+        requirements: "requirements-ubuntu_1804_de_xdesktop.yml"
+        playbook: "main-ubuntu_1804_de_xdesktop.yml"
+    - name: de_devops_jupyter_xdesktop
+      dependencies:
+        box_developer: "kraeml"
+        box_lts: "ubuntu_1804_de_devops_jupyter"
+        requirements: "requirements-ubuntu_1804_de_xdesktop.yml"
+        playbook: "main-ubuntu_1804_de_xdesktop.yml"

@@ -6,7 +6,12 @@
 			"ssh_username": "vagrant",
 			"ssh_password": "vagrant",
       "headless": true,
-			"shutdown_command": "echo 'vagrant' | sudo -S shutdown -P now"
+			"shutdown_command": "echo 'vagrant' | sudo -S shutdown -P now",
+      "vboxmanage": [
+        ["modifyvm", "{{.Name}}", "--memory", "2048"],
+        ["modifyvm", "{{.Name}}", "--cpus", "2"],
+        ["modifyvm", "{{.Name}}", "--vram", "32"]
+      ]
     }
   ],
   "provisioners": [
@@ -55,6 +60,10 @@
         "keep_input_artifact": true
       },
       {
+        "environment_vars": [
+          "BASE={{user `box_name`}}"
+        ],
+        "inline_shebang": "/bin/bash -e",
         "inline": [
           "make test"
         ],
@@ -98,6 +107,9 @@
     "my-bucket": "kraeml-vagrant-boxen",
     "box_organization": "kraeml",
     "requirements": "ansible/requirements-ubuntu_1804_de.yml",
-    "playbook": "ansible/main-ubuntu_1804_de.yml"
+    "playbook": "ansible/main-ubuntu_1804_de.yml",
+    "cpus": "2",
+    "memory": "2048",
+    "vram": "16"
   }
 }

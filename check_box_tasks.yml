@@ -1,5 +1,5 @@
 ---
-  - name: "Check box {{box_developer}}/{{box_lts}} is in version {{box_version}}"
+  - name: "check_box_tasks: Check box {{box_developer}}/{{box_lts}} is in version {{box_version}}"
     # Don't remove this task, because if base box is missing geerlingguy/ubuntu1804
     command: "vagrant box add --box-version {{box_version}} {{box_developer}}/{{box_lts}}"
     register: box_info
@@ -7,35 +7,35 @@
     changed_when: False
     when: box_developer == "geerlingguy"
 
-  - name: "Display box info"
+  - name: "check_box_tasks: Display box info"
     debug:
       var: box_info
       verbosity: 1
 
-  - name: "Display box path variable"
+  - name: "check_box_tasks: Display box path variable"
     debug:
       var: box_ovf_path
       verbosity: 1
 
-  - name: "Test box exists"
+  - name: "check_box_tasks: Test box exists"
     command: "ls -ld {{box_ovf_path}}"
     args:
       creates: "{{box_ovf_path}}"
 
-  - name: Ensure virtualbox-ovf directory exists
+  - name: "check_box_tasks: Ensure virtualbox-ovf directory exists"
     file:
       path: "./virtualbox-ovf/pre_{{BASE}}"
       src: "{{box_ovf_path}}"
       state: link
 
   - block:
-    - name: first file check
+    - name: "check_box_tasks: {{box_ovf_path}}version check"
       stat:
-        path: "{{box_ovf_path}}/version"
+        path: "{{box_ovf_path}}version"
         get_checksum: yes
       register: test_file_check_1
 
-    - name: next check
+    - name: "check_box_tasks: builds/version-{{box_lts}} check"
       stat:
         path: "builds/version-{{box_lts}}"
         get_checksum: yes
@@ -48,7 +48,7 @@
         var: test_file_check_2
         verbosity: 1
 
-    - name: Block run only if file has changes
+    - name: "check_box_tasks: Block run only if files has different versions"
       command: /bin/false
       when: test_file_check_1.stat.checksum != test_file_check_2.stat.checksum
     when: box_developer != "geerlingguy"

@@ -1,48 +1,27 @@
 ---
   - hosts: localhost
-    connection: local
+    # connection: local
     gather_facts: yes
-    vars:
-      ovf_path: "{{ansible_user_dir}}/.vagrant.d/boxes/"
-      ubuntu_1804:
-        - name: de
-          dependencies:
-            box_developer: "geerlingguy"
-            box_lts: "ubuntu1804"
-            box_version: "1.0.1"
-            box_ovf_path: "{{ovf_path}}geerlingguy-VAGRANTSLASH-ubuntu1804/1.0.1/virtualbox/"
-            requirements: "requirements-ubuntu_1804_de.yml"
-            playbook: "main-ubuntu_1804_de.yml"
-        - name: de_jupyter
-          dependencies:
-            box_developer: "kraeml"
-            box_lts: "ubuntu_1804_de"
-            # box_version: "{{lookup('file', 'builds/version-ubuntu_1804_de') }}"
-            requirements: "requirements-ubuntu_1804_de_jupyter.yml"
-            playbook: "main-ubuntu_1804_de_jupyter.yml"
-            # box_ovf_path: "file:-VAGRANTSLASH--VAGRANTSLASH-builds-VAGRANTSLASH-virtualbox-ubuntu_1804_de.box/0/virtualbox/"
-        - name: de_xdesktop
-          dependencies:
-            box_developer: "kraeml"
-            box_lts: "ubuntu_1804_de"
-            # box_version: "{{lookup('file', 'builds/version-ubuntu_1804_de') }}"
-            requirements: "requirements-ubuntu_1804_de_xdesktop.yml"
-            playbook: "main-ubuntu_1804_de_xdesktop.yml"
 
     tasks:
-      - name: Create virtualbox-ubuntu_1804_xy
+      - name: "build-all: Include variables"
+        include_vars: ubuntu_1804.yml
+
+      - name: "build-all:Create virtualbox-ubuntu_1804_xy"
         debug:
           var: "{{item}}"
           verbosity: 1
         with_items: "{{ubuntu_1804}}"
 
-      - name: Ensure builds/version exists
+      - name: "build-all: Ensure builds/version exists"
         file:
           path: builds/version
+          state: touch
 
-      - name: Ensure builds/version for pre_box exists
+      - name: "build-all: Ensure builds/version for pre_box exists"
         file:
           path: "builds/version-{{item.dependencies.box_lts}}"
+          state: touch
         with_items: "{{ubuntu_1804}}"
 
       - include_tasks: build.yml
@@ -58,3 +37,5 @@
         box_ovf_default: "{{ovf_path}}file:-VAGRANTSLASH--VAGRANTSLASH-builds-VAGRANTSLASH-virtualbox-{{item.dependencies.box_lts}}.box/0/virtualbox/"
         box_ovf_path: "{{item.dependencies.box_ovf_path | default (box_ovf_default)}}"
         with_items: "{{ubuntu_1804}}"
+        #environment:
+        #  http_proxy: "{{ansible_default_ipv4.address}}:8888"

@@ -39,6 +39,10 @@
       become: yes
     - role: geerlingguy.mysql
       become: yes
+      mysql_packages:
+        - mariadb-client
+        - mariadb-server
+        - python-mysqldb
       tags:
         - db_mysql
 
@@ -49,7 +53,7 @@
         - listen: "80 default_server"
           server_name: "_"
           root: "/var/www/html"
-          index: "index.php index.html index.htm index.nginx-debian.html"
+          index: "index.html index.htm index.php index.nginx-debian.html"
           error_log: ""
           state: "present"
           template: "{{ nginx_vhost_template }}"
