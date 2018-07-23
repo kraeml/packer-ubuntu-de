@@ -1,53 +1,57 @@
-- name: "build: Start build info"
-  debug:
-    msg: Build Box {{BASE}} depends on {{box_developer}}/{{box_lts}} in version {{box_version}}
-    verbosity: 1
+---
+  - hosts: localhost
+    # connection: local
+    gather_facts: yes
 
-- include_tasks: check_box_tasks.yml
+    tasks:
+      - name: "build: Include variables"
+        include_vars: ubuntu_1804.yml
 
-- name: "build: ToDo skript is often here. Could be better"
-  make:
-    chdir: ./
-    target: no-cloud
+      - name: "build: Create virtualbox-ubuntu_1804_xy"
+        debug:
+          var: "{{item}}"
+          verbosity: 1
+        with_items: "{{ubuntu_1804}}"
 
-- name: "build: Ensure builds directory vor {{BASE}} exists"
-  file:
-    path: "builds/{{BASE}}"
-    state: directory
+      - name: "build: Ensure directories exists"
+        file:
+          path: "{{item}}"
+          state: directory
+        with_items:
+          - builds
+          - builds-config
 
-- name: "build: Create builds Vagrantfile-{{BASE}}"
-  vars:
-    BUILD_PATH: "{{foo.vagrant_path}}"
-  template:
-    dest: "{{foo.dest}}/Vagrantfile-{{BASE}}"
-    src: templates/Vagrantfile-ubuntu_1804_de.j2
-  # ToDo loop_control set for outer_loop
-  loop_control:
-    loop_var: foo
-  with_items:
-    - vagrant_path: "builds/"
-      dest: "builds-config"
-    - vagrant_path: ""
-      dest: "builds"
+      - name: "build: Ensure builds-config/version exists"
+        file:
+          path: builds-config/version
+          state: touch
 
-- block:
-  - name: "build: build {{BASE}}"
-    # Use BASE NOT box_name! The name box_name is double.
-    shell: >
-      packer build -force
-      -var "box_name={{BASE}}"
-      -var "box_organization={{box_organization}}"
-      -var "requirements={{requirements}}"
-      -var "playbook={{playbook}}"
-      packer-ubuntu_1804_de-no-cloud.json
-    args:
-      executable: /bin/bash
-      chdir: ./
-    environment:
-      PACKER_LOG: 1
-      PACKER_LOG_PATH: ./log/packer.log
-  rescue:
-  - name: Error debug info
-    debug:
-      msg: Build Box {{BASE}} error depends on {{box_developer}}/{{box_lts}} in version {{box_version}}
-  - command: /bin/false
+      - name: "build: Ensure builds-config/version for pre_box exists"
+        file:
+          path: "builds-config/version-{{item.dependencies.box_lts}}"
+          state: touch
+        with_items:
+          - "{{ubuntu_1804[BASE_NAME]}}"
+
+      - debug:
+          msg: "{{ubuntu_1804[BASE_NAME]}}"
+          verbosity: 0
+
+      - include_tasks: build-tasks.yml
+        BASE: "ubuntu_1804_{{outer_item.name}}"
+        box_developer: "{{outer_item.dependencies.box_developer}}"
+        box_organization: "{{outer_item.box_organization | default ('kraeml')}}"
+        box_lts: "{{outer_item.dependencies.box_lts}}"
+        box_version: "{{outer_item.dependencies.box_version | default (lookup('file', 'builds-config/version-{{box_lts}}'))}}"
+        box_name: "{{box_organization}}/ubuntu_1804_{{outer_item.name}}"
+        requirements: "ansible/{{outer_item.dependencies.requirements}}"
+        playbook: "ansible/{{outer_item.dependencies.playbook}}"
+        # Used later in box_ovf_path
+        box_ovf_default: "{{ovf_path}}file:-VAGRANTSLASH--VAGRANTSLASH-builds-VAGRANTSLASH-virtualbox-{{outer_item.dependencies.box_lts}}.box/0/virtualbox/"
+        box_ovf_path: "{{outer_item.dependencies.box_ovf_path | default (box_ovf_default)}}"
+        with_items:
+          - "{{ubuntu_1804[BASE_NAME]}}"
+        loop_control:
+          loop_var: outer_item
+        #environment:
+        #  http_proxy: "{{ansible_default_ipv4.address}}:8888"
