@@ -31,18 +31,25 @@
           state: touch
         with_items: "{{ubuntu_1804}}"
 
+      - debug:
+          msg: "{{ubuntu_1804[17]}}"
+          verbosity: 0
+
       - include_tasks: build.yml
-        BASE: "ubuntu_1804_{{item.name}}"
-        box_developer: "{{item.dependencies.box_developer}}"
-        box_organization: "{{item.box_organization | default ('kraeml')}}"
-        box_lts: "{{item.dependencies.box_lts}}"
-        box_version: "{{item.dependencies.box_version | default (lookup('file', 'builds-config/version-{{box_lts}}'))}}"
-        box_name: "{{box_organization}}/ubuntu_1804_{{item.name}}"
-        requirements: "ansible/{{item.dependencies.requirements}}"
-        playbook: "ansible/{{item.dependencies.playbook}}"
+        BASE: "ubuntu_1804_{{outer_item.name}}"
+        box_developer: "{{outer_item.dependencies.box_developer}}"
+        box_organization: "{{outer_item.box_organization | default ('kraeml')}}"
+        box_lts: "{{outer_item.dependencies.box_lts}}"
+        box_version: "{{outer_item.dependencies.box_version | default (lookup('file', 'builds-config/version-{{box_lts}}'))}}"
+        box_name: "{{box_organization}}/ubuntu_1804_{{outer_item.name}}"
+        requirements: "ansible/{{outer_item.dependencies.requirements}}"
+        playbook: "ansible/{{outer_item.dependencies.playbook}}"
         # Used later in box_ovf_path
-        box_ovf_default: "{{ovf_path}}file:-VAGRANTSLASH--VAGRANTSLASH-builds-VAGRANTSLASH-virtualbox-{{item.dependencies.box_lts}}.box/0/virtualbox/"
-        box_ovf_path: "{{item.dependencies.box_ovf_path | default (box_ovf_default)}}"
-        with_items: "{{ubuntu_1804}}"
+        box_ovf_default: "{{ovf_path}}file:-VAGRANTSLASH--VAGRANTSLASH-builds-VAGRANTSLASH-virtualbox-{{outer_item.dependencies.box_lts}}.box/0/virtualbox/"
+        box_ovf_path: "{{outer_item.dependencies.box_ovf_path | default (box_ovf_default)}}"
+        with_items:
+          - "{{ubuntu_1804[19]}}"
+        loop_control:
+          loop_var: outer_item
         #environment:
         #  http_proxy: "{{ansible_default_ipv4.address}}:8888"

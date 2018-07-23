@@ -1,4 +1,4 @@
-- name: Start build info
+- name: "build: Start build info"
   debug:
     msg: Build Box {{BASE}} depends on {{box_developer}}/{{box_lts}} in version {{box_version}}
     verbosity: 1
@@ -10,9 +10,9 @@
     chdir: ./
     target: no-cloud
 
-- name: Ensure builds directory vor {{BASE}} exists
+- name: "build: Ensure builds directory vor {{BASE}} exists"
   file:
-    path: "{{BASE}}"
+    path: "builds/{{BASE}}"
     state: directory
 
 - name: "build: Create builds Vagrantfile-{{BASE}}"
@@ -30,18 +30,24 @@
     - vagrant_path: ""
       dest: "builds"
 
-- name: "build: build {{BASE}}"
-  # Use BASE NOT box_name! The name box_name is double.
-  shell: >
-    packer build -force
-    -var "box_name={{BASE}}"
-    -var "box_organization={{box_organization}}"
-    -var "requirements={{requirements}}"
-    -var "playbook={{playbook}}"
-    packer-ubuntu_1804_de-no-cloud.json
-  args:
-    executable: /bin/bash
-    chdir: ./
-  environment:
-    PACKER_LOG: 1
-    PACKER_LOG_PATH: ./log/packer.log
+- block:
+  - name: "build: build {{BASE}}"
+    # Use BASE NOT box_name! The name box_name is double.
+    shell: >
+      packer build -force
+      -var "box_name={{BASE}}"
+      -var "box_organization={{box_organization}}"
+      -var "requirements={{requirements}}"
+      -var "playbook={{playbook}}"
+      packer-ubuntu_1804_de-no-cloud.json
+    args:
+      executable: /bin/bash
+      chdir: ./
+    environment:
+      PACKER_LOG: 1
+      PACKER_LOG_PATH: ./log/packer.log
+  rescue:
+  - name: Error debug info
+    debug:
+      msg: Build Box {{BASE}} error depends on {{box_developer}}/{{box_lts}} in version {{box_version}}
+  - command: /bin/false

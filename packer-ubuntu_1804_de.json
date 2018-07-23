@@ -65,6 +65,7 @@
         ],
         "inline_shebang": "/bin/bash -e",
         "inline": [
+          "sync",
           "make test"
         ],
         "type": "shell-local"

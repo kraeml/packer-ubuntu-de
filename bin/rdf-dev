@@ -1,0 +1,50 @@
+#!/bin/bash
+set -x
+VAGRANT_BUILD_PATH=~/Dokumente/Schule/Bento-Boxen/packer-ubuntu-devops-academy/packer-ubuntu-de/builds
+#Falls kein zweites Kommando angegeben setze vagrant Command aus dem zustarten.
+#Pfad dann im Buildpath um dort zu starten. Type ist desktop.
+VAGRANT_PATH=$VAGRANT_BUILD_PATH
+# Wird hier ubuntu_1804 nicht verwendet
+TYPE=desktop
+if [ -z $2 ]
+then
+	COMMAND=$1
+	export VAGRANT_VAGRANTFILE=$VAGRANT_BUILD_PATH/Vagrantfile-ubuntu_1804_de
+else
+	COMMAND=$2
+	export VAGRANT_VAGRANTFILE=Vagrantfile-ubuntu_1804_$1
+fi
+if [ ! -d $VAGRANT_PATH ]
+then
+	mkdir -p $VAGRANT_PATH
+fi
+OLD=$PWD
+cd $VAGRANT_PATH
+if [ $COMMAND == "neu" ]
+then
+	read -p "Are you sure? " -n 1 -r
+	echo    # (optional) move to a new line
+	if [[ $REPLY =~ ^[Yy]$ ]]
+	then
+		vagrant destroy --force
+		# Falls ein Type angegeben wurde neuen suchen
+		# Ansonsten im Buildverzeichnie einfach starten
+		if [ ! -z $2 ]
+		then
+			cd $VAGRANT_BUILD_PATH
+			set -e
+			ansible-playbook ansible-local/playbook.yml  --extra-vars="type=$TYPE"
+			set +e
+			cd -
+		fi
+		vagrant up
+		vagrant ssh
+	fi
+else
+	if [ $COMMAND == "ssh" ]
+	then
+		vagrant up || true
+	fi
+	vagrant $COMMAND
+fi
+cd $OLD
