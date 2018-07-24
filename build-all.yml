@@ -36,20 +36,9 @@
           verbosity: 1
 
       - include_tasks: build-tasks.yml
-        BASE_NAME: "{{ubuntu_1804[outer_all_item].name}}"
-        BASE: "ubuntu_1804_{{ubuntu_1804[outer_all_item].name}}"
-        box_developer: "{{ubuntu_1804[outer_all_item].dependencies.box_developer}}"
-        box_organization: "{{ubuntu_1804[outer_all_item].box_organization | default ('kraeml')}}"
-        box_lts: "{{ubuntu_1804[outer_all_item].dependencies.box_lts}}"
-        box_version: "{{ubuntu_1804[outer_all_item].dependencies.box_version | default (lookup('file', 'builds-config/version-{{box_lts}}'))}}"
-        box_name: "{{box_organization}}/ubuntu_1804_{{ubuntu_1804[outer_all_item].name}}"
-        requirements: "ansible/{{ubuntu_1804[outer_all_item].dependencies.requirements}}"
-        playbook: "ansible/{{ubuntu_1804[outer_all_item].dependencies.playbook}}"
-        # Used later in box_ovf_path
-        box_ovf_default: "{{ovf_path}}file:-VAGRANTSLASH--VAGRANTSLASH-builds-VAGRANTSLASH-virtualbox-{{ubuntu_1804[outer_all_item].dependencies.box_lts}}.box/0/virtualbox/"
-        box_ovf_path: "{{ubuntu_1804[outer_all_item].dependencies.box_ovf_path | default (box_ovf_default)}}"
+        build_item: "{{ubuntu_1804[outer_item]}}"
         with_items: "{{all}}"
         loop_control:
-          loop_var: outer_all_item
+          loop_var: outer_item
         #environment:
         #  http_proxy: "{{ansible_default_ipv4.address}}:8888"

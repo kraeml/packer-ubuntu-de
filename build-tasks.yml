@@ -1,3 +1,25 @@
+- name: "build-task: build_item debug"
+  debug:
+    var: build_item
+    verbosity: 1
+
+- block:
+  - name: "build-task:Set variables"
+    set_fact:
+      BASE: "ubuntu_1804_{{build_item.name}}"
+      box_developer: "{{build_item.dependencies.box_developer}}"
+      box_organization: "{{build_item.box_organization | default ('kraeml')}}"
+      box_lts: "{{build_item.dependencies.box_lts}}"
+      requirements: "ansible/{{build_item.dependencies.requirements}}"
+      playbook: "ansible/{{build_item.dependencies.playbook}}"
+      # Used later in box_ovf_path
+      box_ovf_default: "{{ovf_path}}file:-VAGRANTSLASH--VAGRANTSLASH-builds-VAGRANTSLASH-virtualbox-{{build_item.dependencies.box_lts}}.box/0/virtualbox/"
+
+  - set_fact:
+      box_version: "{{build_item.dependencies.box_version | default (lookup('file', 'builds-config/version-{{box_lts}}'))}}"
+      box_name: "{{box_organization}}/{{BASE}}"
+      box_ovf_path: "{{build_item.dependencies.box_ovf_path | default (box_ovf_default)}}"
+
 - name: "build-task: Start build info"
   debug:
     msg: Build Box {{BASE}} depends on {{box_developer}}/{{box_lts}} in version {{box_version}}
