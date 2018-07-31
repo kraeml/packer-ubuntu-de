@@ -13,7 +13,7 @@
       requirements: "ansible/{{build_item.dependencies.requirements}}"
       playbook: "ansible/{{build_item.dependencies.playbook}}"
       # Used later in box_ovf_path
-      box_ovf_default: "{{ovf_path}}file:-VAGRANTSLASH--VAGRANTSLASH-builds-VAGRANTSLASH-virtualbox-{{build_item.dependencies.box_lts}}.box/0/virtualbox/"
+      box_ovf_default: "{{ovf_path}}file:-VAGRANTSLASH--VAGRANTSLASH-builds-VAGRANTSLASH-{{build_item.dependencies.box_lts}}-VAGRANTSLASH-virtualbox-{{build_item.dependencies.box_lts}}.box/0/virtualbox/"
 
   - set_fact:
       box_version: "{{build_item.dependencies.box_version | default (lookup('file', 'builds-config/version-{{box_lts}}'))}}"

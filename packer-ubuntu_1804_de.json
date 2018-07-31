@@ -54,7 +54,7 @@
   "post-processors": [
     [
       {
-        "output": "builds/{{user `box_name`}}/{{.Provider}}.box",
+        "output": "builds/{{user `box_name`}}/{{.Provider}}-{{user `box_name`}}.box",
         "type": "vagrant",
         "include": ["builds-config/version"],
         "keep_input_artifact": true
@@ -83,7 +83,7 @@
     ],
     [
       {
-        "output": "builds/{{.Provider}}-{{user `box_name`}}.box",
+        "output": "builds/{{user `box_name`}}/{{.Provider}}-{{user `box_name`}}.box",
         "type": "vagrant",
         "include": ["builds-config/version-{{user `box_name`}}"],
         "keep_input_artifact": true
