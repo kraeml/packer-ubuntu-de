@@ -29,7 +29,7 @@ clean_all: rm_box rm_no_cloud
 	# rm virtualbox-ovf/$(BASE)/* 2>/dev/null || true
 
 rm_box:
-	rm builds/virtualbox-$(BASE).box 2>/dev/null || true
+	rm builds/$(BASE)/virtualbox.box 2>/dev/null || true
 
 rm_no_cloud:
 	rm packer-ubuntu_1804_de-no-cloud.json 2>/dev/null || true
@@ -47,7 +47,7 @@ test: vagrant_box_clean test_inspec
 
 vagrant_box_clean:
 	vagrant destroy --force 2>/dev/null || true
-	vagrant box remove --force file://builds/virtualbox-$(BASE).box 2>/dev/null || true
+	vagrant box remove --force file://builds/$(BASE)/virtualbox.box 2>/dev/null || true
 
 
 all: clean_all build test
