@@ -47,7 +47,7 @@
   loop_control:
     loop_var: foo
   with_items:
-    - vagrant_path: "builds/{{BASE}}"
+    - vagrant_path: "/builds/{{BASE}}"
       dest: "builds-config/Vagrantfile-{{BASE}}"
     - vagrant_path: ""
       dest: "builds/{{BASE}}/Vagrantfile"

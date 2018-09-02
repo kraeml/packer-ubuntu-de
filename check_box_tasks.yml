@@ -29,7 +29,7 @@
       state: link
 
   - block:
-    - name: "check_box_tasks: {{box_ovf_path}}version check"
+    - name: "check_box_tasks: {{box_ovf_path}} version check"
       stat:
         path: "{{box_ovf_path}}version"
         get_checksum: yes
@@ -51,4 +51,34 @@
     - name: "check_box_tasks: Block run only if files has different versions"
       command: /bin/false
       when: test_file_check_1.stat.checksum != test_file_check_2.stat.checksum
+    rescue:
+    - name: "check_box_tasks: Rescue remove {{box_lts}}"
+      command: vagrant box remove --force file://builds/{{box_lts}}/virtualbox-{{box_lts}}.box
+    - name: "check_box_tasks: Add {{box_lts}}"
+      command: vagrant box add file://builds/{{box_lts}}/virtualbox-{{box_lts}}.box --name file://builds/{{box_lts}}/virtualbox-{{box_lts}}.box
+    when: box_developer != "geerlingguy"
+
+  - block:
+    - name: "check_box_tasks: {{box_ovf_path}} version check"
+      stat:
+        path: "{{box_ovf_path}}version"
+        get_checksum: yes
+      register: test_file_check_3
+
+    - name: "check_box_tasks: builds-config/version-{{box_lts}} check"
+      stat:
+        path: "builds-config/version-{{box_lts}}"
+        get_checksum: yes
+      register: test_file_check_4
+
+    - debug:
+        var: test_file_check_3
+        verbosity: 1
+    - debug:
+        var: test_file_check_4
+        verbosity: 1
+
+    - name: "check_box_tasks: Block run only if files has different versions"
+      command: /bin/false
+      when: test_file_check_3.stat.checksum != test_file_check_4.stat.checksum
     when: box_developer != "geerlingguy"

@@ -47,7 +47,7 @@ test: vagrant_box_clean test_inspec
 
 vagrant_box_clean:
 	vagrant destroy --force 2>/dev/null || true
-	vagrant box remove --force file://builds/$(BASE)/virtualbox.box 2>/dev/null || true
+	vagrant box remove --force file://builds/$(BASE)/virtualbox-$(BASE).box 2>/dev/null || true
 
 
 all: clean_all build test
