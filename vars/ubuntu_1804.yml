@@ -18,6 +18,9 @@
     - de_devops_jupyter
     - de_devops_xdesktop
     - de_devops_jupyter_xdesktop
+    - de_base_ina
+
+  base_version: "1.0.3"
 
   ubuntu_1804:
     # DE for german language setup
@@ -26,8 +29,8 @@
       dependencies:
         box_developer: "geerlingguy"
         box_lts: "ubuntu1804"
-        box_version: "1.0.1"
-        box_ovf_path: "{{ovf_path}}geerlingguy-VAGRANTSLASH-ubuntu1804/1.0.1/virtualbox/"
+        box_version: "{{base_version}}"
+        box_ovf_path: "{{ovf_path}}geerlingguy-VAGRANTSLASH-ubuntu1804/{{base_version}}/virtualbox/"
         requirements: "requirements-ubuntu_1804_de.yml"
         playbook: "main-ubuntu_1804_de.yml"
     de_jupyter:
