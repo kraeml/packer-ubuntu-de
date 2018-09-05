@@ -3,6 +3,13 @@
     var: build_item
     verbosity: 1
 
+- name: Install dependencies
+  become: yes
+  apt:
+    name: "{{item}}"
+  with_items:
+    - jq
+
 - block:
   - name: "build-task:Set variables"
     set_fact:
