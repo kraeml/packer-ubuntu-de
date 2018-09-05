@@ -1,5 +1,4 @@
 ---
-- src: franklinkim.git
-  version: '1.2.2'
-- src: angstwad.docker_ubuntu
-  version: 'v3.4.7'
+- src: geerlingguy.ruby
+- src: reallyenglish.packer-binary
+- src: viniciusfs.vagrant
