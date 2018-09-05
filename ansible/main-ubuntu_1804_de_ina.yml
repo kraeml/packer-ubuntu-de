@@ -33,6 +33,35 @@
         - vue-cli
         - mocha
         - chai
+        - grunt-cli
+        - grunt-init
+        - gulp-cli
+        - npm-check-updates
+        - typescript
+        - ts-node
+        - typings
+        - pm2
+        - socket.io
+        - sqlite3
+        - mongoose
+        - mysql
+        - express
+        - javascripting
+        - how-to-npm
+        - scope-chains-closures
+        - stream-adventure
+        - how-to-markdown
+        - learnyouhtml
+        - learnyounode
+        - functional-javascript-workshop
+        - bytewiser
+        - expressworks
+        - bug-clinic
+        - async-you
+        - test-anything
+        - learnyoumongo
+        - torrential
+        - html-validator-cli
 
     roles:
     - role: geerlingguy.nodejs
