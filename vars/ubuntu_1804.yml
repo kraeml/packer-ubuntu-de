@@ -19,6 +19,9 @@
     - de_devops_xdesktop
     - de_devops_jupyter_xdesktop
     - de_base_ina
+    - de_base_ina_jupyter
+    - de_base_ina_xdesktop
+    - de_base_ina_jupyter_xdesktop
 
   base_version: "1.0.3"
 

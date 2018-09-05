@@ -11,3 +11,4 @@ version-ubuntu_1804_de*
 packer.log
 tmp/
 log/
+ansible/test.yml

@@ -9,12 +9,12 @@
       ruby_install_gems:
         - inspec
         - serverspec
-        - capybara
+        #- capybara
         - selenium-webdriver
         - cucumber
         - rspec
         - sinatra
-        - poltergeist
+        #- poltergeist
         - rspec-expectations
         - launchy
         - rest-client
@@ -28,8 +28,8 @@
         - kitchen-lxc
         - kitchen-inspec
         #- fog
-        - foodcritic
-        - thor-foodcritic
+        #- foodcritic
+        #- thor-foodcritic
       tags:
         - ruby
     - role: reallyenglish.packer-binary

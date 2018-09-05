@@ -50,14 +50,14 @@
         - how-to-npm
         - scope-chains-closures
         - stream-adventure
-        - how-to-markdown
-        - learnyouhtml
-        - learnyounode
+        #- how-to-markdown
+        #- learnyouhtml
+        #- learnyounode
         - functional-javascript-workshop
         - bytewiser
         - expressworks
-        - bug-clinic
-        - async-you
+        #- bug-clinic
+        #- async-you
         - test-anything
         - learnyoumongo
         - torrential
