@@ -6,6 +6,8 @@
     tasks:
       - name: "build-all: Include variables"
         include_vars: ubuntu_1804.yml
+        tags:
+          - test_var
 
       - name: "build-all:Create virtualbox-ubuntu_1804_xy"
         debug:
@@ -40,5 +42,7 @@
         with_items: "{{all}}"
         loop_control:
           loop_var: outer_item
+        tags:
+          - test_var
         #environment:
         #  http_proxy: "{{ansible_default_ipv4.address}}:8888"

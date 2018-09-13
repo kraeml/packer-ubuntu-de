@@ -9,11 +9,14 @@
     name: "{{item}}"
   with_items:
     - jq
+  tags:
+    - dependencies
 
 - block:
   - name: "build-task:Set variables"
     set_fact:
       BASE: "ubuntu_1804_{{build_item.name}}"
+      CONTROLS: "{{build_item.name | regex_replace('_', ' ')}}"
       box_developer: "{{build_item.dependencies.box_developer}}"
       box_organization: "{{build_item.box_organization | default ('kraeml')}}"
       box_lts: "{{build_item.dependencies.box_lts}}"
@@ -26,11 +29,19 @@
       box_version: "{{build_item.dependencies.box_version | default (lookup('file', 'builds-config/version-{{box_lts}}'))}}"
       box_name: "{{box_organization}}/{{BASE}}"
       box_ovf_path: "{{build_item.dependencies.box_ovf_path | default (box_ovf_default)}}"
+  tags:
+    - test_var
 
 - name: "build-task: Start build info"
   debug:
     msg: Build Box {{BASE}} depends on {{box_developer}}/{{box_lts}} in version {{box_version}}
     verbosity: 1
+
+- name: "build-tasks: Debug info for CONTROLS"
+  debug:
+    var: CONTROLS
+  tags:
+    - test_var
 
 - include_tasks: check_box_tasks.yml
 
@@ -68,6 +79,7 @@
       -var "box_organization={{box_organization}}"
       -var "requirements={{requirements}}"
       -var "playbook={{playbook}}"
+      -var "controls={{CONTROLS}}"
       packer-ubuntu_1804_de-no-cloud.json
     args:
       executable: /bin/bash
