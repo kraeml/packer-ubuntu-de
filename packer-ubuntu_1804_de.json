@@ -8,8 +8,8 @@
       "headless": true,
 			"shutdown_command": "echo 'vagrant' | sudo -S shutdown -P now",
       "vboxmanage": [
-        ["modifyvm", "{{.Name}}", "--memory", "2048"],
-        ["modifyvm", "{{.Name}}", "--cpus", "2"],
+        ["modifyvm", "{{.Name}}", "--memory", "4096"],
+        ["modifyvm", "{{.Name}}", "--cpus", "4"],
         ["modifyvm", "{{.Name}}", "--vram", "32"]
       ]
     }
@@ -61,7 +61,8 @@
       },
       {
         "environment_vars": [
-          "BASE={{user `box_name`}}"
+          "BASE={{user `box_name`}}",
+          "CONTROLS={{user `controls`}}"
         ],
         "inline_shebang": "/bin/bash -e",
         "inline": [
