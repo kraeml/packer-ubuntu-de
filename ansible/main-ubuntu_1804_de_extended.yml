@@ -56,6 +56,7 @@
           - open-iscsi
           #- redis-server
           #- rabbitmq-server
+          # ToDo dnsmasq daktivieren wegen systemd-resolv
           - dnsmasq
 
       - name: "Extend ubuntu template"

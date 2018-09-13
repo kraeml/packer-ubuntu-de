@@ -21,8 +21,8 @@
         password: "{{db_user.password}}"
         priv: "*.*:ALL"
       package_version:
-        phpmyadmin: "4.8.2"
-      nodejs_version: "10.x"
+        phpmyadmin: "4.8.3"
+      nodejs_version: "8.x"
       npm_config_unsafe_perm: "true"
       nodejs_npm_global_packages:
         - node-red
@@ -43,9 +43,7 @@
         - pm2
         - socket.io
         - sqlite3
-        - mongoose
         - mysql
-        - express
         - javascripting
         - how-to-npm
         - scope-chains-closures
@@ -165,6 +163,16 @@
       - name: Sag Hallo
         debug:
           msg: Hello world!
+
+      - name: Workaround for npm sudo git error
+        command: "sudo su -l -c 'npm --unsafe-perm=true install -g {{item}}'"
+        with_items:
+          #- npm
+          - learnyouhtml
+          - how-to-markdown
+          - learnyounode
+          - bug-clinic
+          - async-you
 
       - name: Install Web-Dev packages
         become: yes

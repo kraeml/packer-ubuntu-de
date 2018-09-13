@@ -36,6 +36,7 @@
             - virtualenv
 
   tasks:
+    # ToDo Setup new entries in inspec via yaml
     - name: "Install needed packages"
       become: yes
       apt:

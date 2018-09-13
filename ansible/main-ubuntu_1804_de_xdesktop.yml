@@ -8,6 +8,73 @@
       lightdm_autologin_user: vagrant
       tags:
         - desktop
+        #
+        # Install Atom editor
+    - role: gantsign.atom
+      become: yes
+      users:
+        - username: vagrant
+          atom_packages:
+            - editorconfig
+            - minimap
+            - linter
+            - linter-ui-default
+            - busy-signal
+            - intentions
+            - atom-beautify
+            - file-icons
+            - atom-ide-ui
+            - ide-typescript
+            - ide-json
+            - ide-yaml
+            - ide-css
+            - ide-html
+            - ide-python
+            - atom-jinja2
+            - autocomplete-ansible
+            - linter-ansible-linting
+            - platformio-ide-terminal
+            #- platformio-ide
+            #- platformio-ide-debugger
+          atom_config:
+            "*":
+              "atom-ide-ui":
+                use: {}
+              "autocomplete-ansible":
+                pythonPaths: "/home/vagrant/.virtualenvs/$PROJECT_NAME/bin/python;$PROJECT/venv/bin/python;/usr/bin/python"
+              core:
+                disabledPackages: [
+                  "linter"
+                ]
+                projectHome: "/home/vagrant/workspace"
+                telemetryConsent: "no"
+              editor:
+                showIndentGuide: true
+                showInvisibles: true
+              welcome:
+                showOnStartup: false
+      tags:
+        - desktop
+        - atom
+
+    # Install Go package for Atom
+    - role: gantsign.atom-packages
+      become: yes
+      tags:
+        - desktop
+        - atom
+        - golang
+      users:
+        - username: vagrant
+          atom_packages:
+            - go-plus
+
+    # Install Go language SDK
+    - role: gantsign.golang
+      become: yes
+      tags:
+        - golang
+      golang_gopath: '$HOME/workspace-go'
 
     tasks:
     - name: Autologin for {{ansible_user_id}}
@@ -19,3 +86,39 @@
         block: |
           AutomaticLoginEnable = true
           AutomaticLogin = {{ansible_user_id}}
+
+    - name: Desktop Block
+      block:
+      - name: "Install desktop needed packages"
+        become: yes
+        apt:
+            name: "{{ item }}"
+            state: installed
+            update_cache: yes
+            cache_valid_time: 3600
+        with_items:
+            - hunspell-de-ch
+            - wogerman
+            - hunspell-de-at
+            - hunspell-en-us
+            - wbritish
+            - hunspell-de-de
+            - language-pack-gnome-de
+            - wngerman
+            - hunspell-en-au
+            - wswiss
+            - hunspell-en-za
+            - hunspell-en-ca
+            - wamerican
+            - hunspell-en-gb
+            - file-roller
+            - clang
+            - texworks
+
+      - name: Deactivate powweroff dialog
+        command: "{{item}}"
+        with_items:
+            # - "gsettings set com.canonical.indicator.session suppress-logout-restart-shutdown true"
+            - "gsettings set org.gnome.settings-daemon.plugins.power button-power 'shutdown'"
+      tags:
+        - desktop
