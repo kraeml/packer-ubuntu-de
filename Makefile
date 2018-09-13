@@ -13,6 +13,10 @@ else
 FILE_NAME = packer-ubuntu_1804_de-no-cloud
 endif
 
+ifndef CONTROLS
+CONTROLS = de
+endif
+
 
 no-cloud:
 	cat packer-ubuntu_1804_de.json | jq 'del(."post-processors"[1])' > packer-ubuntu_1804_de-no-cloud.json
@@ -36,11 +40,12 @@ rm_no_cloud:
 
 test_inspec:
 	vagrant up
-	inspec exec -t ssh://vagrant@$$(vagrant ssh-config | grep HostName | cut -d 'e' -f 2 | cut -d ' ' -f 2):$$(vagrant ssh-config | grep Port | cut -d 't' -f 2 | cut -d ' ' -f 2) -i $$(vagrant ssh-config | grep IdentityFile | cut -d ' ' -f 4) --password vagrant inspec_test/locale_de/
+	echo $(CONTROLS)
+	LC_MESSAGES=C inspec exec --controls=$(CONTROLS) -t ssh://vagrant@$$(vagrant ssh-config | grep HostName | cut -d 'e' -f 2 | cut -d ' ' -f 2):$$(vagrant ssh-config | grep Port | cut -d 't' -f 2 | cut -d ' ' -f 2) -i $$(vagrant ssh-config | grep IdentityFile | cut -d ' ' -f 4) --password vagrant inspec_test/locale_de/
 
 test_devsec:
 	vagrant up
-	inspec exec -t ssh://vagrant@$$(vagrant ssh-config | grep HostName | cut -d 'e' -f 2 | cut -d ' ' -f 2):$$(vagrant ssh-config | grep Port | cut -d 't' -f 2 | cut -d ' ' -f 2) -i $$(vagrant ssh-config | grep IdentityFile | cut -d ' ' -f 4) --password vagrant https://github.com/dev-sec/linux-baseline
+	LC_MESSAGES=C inspec exec -t ssh://vagrant@$$(vagrant ssh-config | grep HostName | cut -d 'e' -f 2 | cut -d ' ' -f 2):$$(vagrant ssh-config | grep Port | cut -d 't' -f 2 | cut -d ' ' -f 2) -i $$(vagrant ssh-config | grep IdentityFile | cut -d ' ' -f 4) --password vagrant https://github.com/dev-sec/linux-baseline
 
 test: vagrant_box_clean test_inspec
 	vagrant destroy --force 2>/dev/null || true
