@@ -2,11 +2,16 @@
   "builders": [
 		{
 			"type": "virtualbox-ovf",
-			"source_path": "virtualbox-ovf/{{user `box_name`}}/box.ovf",
+			"source_path": "virtualbox-ovf/pre_{{user `box_name`}}/box.ovf",
 			"ssh_username": "vagrant",
 			"ssh_password": "vagrant",
       "headless": true,
-			"shutdown_command": "echo 'vagrant' | sudo -S shutdown -P now"
+			"shutdown_command": "echo 'vagrant' | sudo -S shutdown -P now",
+      "vboxmanage": [
+        ["modifyvm", "{{.Name}}", "--memory", "4096"],
+        ["modifyvm", "{{.Name}}", "--cpus", "4"],
+        ["modifyvm", "{{.Name}}", "--vram", "32"]
+      ]
     }
   ],
   "provisioners": [
@@ -18,13 +23,13 @@
     },
     {
       "type": "shell",
-      "inline": ["sleep 60; echo Hello again"],
+      "inline": ["sleep 30; echo Hello again"],
       "expect_disconnect": true
     },
     {
       "type": "ansible-local",
-      "playbook_file": "ansible/main-{{user `box_name`}}.yml",
-      "galaxy_file": "requirements-{{user `box_name`}}.yml",
+      "playbook_file": "{{user `playbook`}}",
+      "galaxy_file": "{{user `requirements`}}",
       "extra_arguments": [
           "--skip-tags={{ user `ansible_skip_tags` }}",
           "--user=vagrant"
@@ -34,17 +39,34 @@
       "type": "shell",
       "execute_command": "echo 'vagrant' | {{.Vars}} sudo -S -E bash '{{.Path}}'",
       "script": "scripts/cleanup.sh"
+    },
+    {
+      "environment_vars": [
+        "VERSION={{user `version`}}"
+      ],
+      "inline_shebang": "/bin/bash -e",
+      "inline": [
+        "echo $VERSION > builds-config/version"
+      ],
+      "type": "shell-local"
     }
   ],
   "post-processors": [
     [
       {
-        "output": "builds/{{.Provider}}-{{user `box_name`}}.box",
+        "output": "builds/{{user `box_name`}}/{{.Provider}}-{{user `box_name`}}.box",
         "type": "vagrant",
+        "include": ["builds-config/version"],
         "keep_input_artifact": true
       },
       {
+        "environment_vars": [
+          "BASE={{user `box_name`}}",
+          "CONTROLS={{user `controls`}}"
+        ],
+        "inline_shebang": "/bin/bash -e",
         "inline": [
+          "sync",
           "make test"
         ],
         "type": "shell-local"
@@ -55,15 +77,16 @@
         ],
         "inline_shebang": "/bin/bash -e",
         "inline": [
-          "echo $VERSION > version-{{ user `box_name` }}"
+          "echo $VERSION > builds-config/version-{{ user `box_name` }}"
         ],
         "type": "shell-local"
       }
     ],
     [
       {
-        "output": "builds/{{.Provider}}-{{user `box_name`}}.box",
+        "output": "builds/{{user `box_name`}}/{{.Provider}}-{{user `box_name`}}.box",
         "type": "vagrant",
+        "include": ["builds-config/version-{{user `box_name`}}"],
         "keep_input_artifact": true
       },
       {
@@ -84,6 +107,11 @@
     "version": "{{isotime \"06.01.0215\"}}",
     "ansible_skip_tags": "ansible,not_packer,todo",
     "my-bucket": "kraeml-vagrant-boxen",
-    "box_organization": "kraeml"
+    "box_organization": "kraeml",
+    "requirements": "ansible/requirements-ubuntu_1804_de.yml",
+    "playbook": "ansible/main-ubuntu_1804_de.yml",
+    "cpus": "2",
+    "memory": "2048",
+    "vram": "16"
   }
 }

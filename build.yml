@@ -1,0 +1,47 @@
+---
+  - hosts: localhost
+    # connection: local
+    gather_facts: yes
+
+    tasks:
+      - name: "build: Include variables"
+        include_vars: ubuntu_1804.yml
+        tags:
+          - test_var
+
+      - name: "build: Create virtualbox-ubuntu_1804_xy"
+        debug:
+          var: "{{item}}"
+          verbosity: 1
+        with_items: "{{ubuntu_1804}}"
+
+      - name: "build: Ensure directories exists"
+        file:
+          path: "{{item}}"
+          state: directory
+        with_items:
+          - builds
+          - builds-config
+
+      - name: "build: Ensure builds-config/version exists"
+        file:
+          path: builds-config/version
+          state: touch
+
+      - name: "build: Ensure builds-config/version for pre_box exists"
+        file:
+          path: "builds-config/version-{{item.dependencies.box_lts}}"
+          state: touch
+        with_items:
+          - "{{ubuntu_1804[BASE_NAME]}}"
+
+      - debug:
+          msg: "{{ubuntu_1804[BASE_NAME]}}"
+          verbosity: 0
+
+      - include_tasks: build-tasks.yml
+        build_item: "{{ubuntu_1804[BASE_NAME]}}"
+        tags:
+          - test_var
+        #environment:
+        #  http_proxy: "{{ansible_default_ipv4.address}}:8888"

@@ -3,7 +3,7 @@
   #become: yes
   gather_facts: yes
   roles:
-    - role: tersmitten.locales
+    - role: oefenweb.locales
       become: yes
       locales_present:
         - en_US.UTF-8
@@ -18,7 +18,7 @@
         # language: de_DE.UTF-8
       tags:
         - locale_de
-    - role: tersmitten.timezone
+    - role: oefenweb.timezone
       become: yes
       timezone_zone: "Europe/Berlin"
       tags:
