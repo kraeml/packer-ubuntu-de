@@ -32,9 +32,28 @@ Vagrant.configure("2") do |config|
 
   # Create a private network, which allows host-only access to the machine
   # using a specific IP.
-  {% if 'jupyter' in CONTROLS or 'ina' in CONTROLS %}
-config.vm.network "private_network", ip: "192.168.33.10"
-  {% else %}# config.vm.network "private_network", ip: "192.168.33.10"
+  {% if 'jupyter' in CONTROLS or 'ina' in CONTROLS -%}
+    {% if 'de' in CONTROLS -%}
+      {% set ip = 10 -%}
+    {% endif -%}
+    {% if 'base' in CONTROLS -%}
+      {% set ip = 20 -%}
+    {% endif -%}
+    {% if 'extented' in CONTROLS -%}
+      {% set ip = 30 -%}
+    {% endif -%}
+    {% if 'devops' in CONTROLS -%}
+      {% set ip = 40 -%}
+    {% endif -%}
+    {% if 'ina' in CONTROLS -%}
+      {% set ip = 50 -%}
+    {% endif -%}
+    {% if 'jupyter' in CONTROLS -%}
+      {% set ip = ip + 1 -%}
+    {% endif -%}
+  config.vm.network "private_network", ip: "192.168.33.{{ip}}"
+    {% else -%}
+  # config.vm.network "private_network", ip: "192.168.33.10"
   {% endif %}
 
   # Create a public network, which generally matched to bridged network.
@@ -46,12 +65,46 @@ config.vm.network "private_network", ip: "192.168.33.10"
   # the path on the host to the actual folder. The second argument is
   # the path on the guest to mount the folder. And the optional third
   # argument is a set of non-required options.
+  {% if 'ina' in CONTROLS -%}
+  config.vm.synced_folder "./www", "/home/vagrant/www", create: true
+  config.vm.synced_folder "./node-red", "/home/vagrant/.node-red", create: true
+  config.vm.synced_folder "./workspace", "/home/vagrant/workspace", create: true
+  {% else -%}
   # config.vm.synced_folder "../data", "/vagrant_data"
+  {% endif %}
+  {% if 'jupyter' in CONTROLS -%}
+  config.vm.synced_folder "./notebooks", "/home/vagrant/notebooks", create: true
+  {% endif -%}
 
   # Provider-specific configuration so you can fine-tune various
   # backing providers for Vagrant. These expose provider-specific options.
   # Example for VirtualBox:
   #
+  {% if 'xdesktop' in CONTROLS -%}
+  config.vm.provider "virtualbox" do |vb|
+    # Display the VirtualBox GUI when booting the machine
+    vb.gui = true
+
+    # Customize the amount of memory on the VM:
+    vb.memory = "4096"
+
+    # Customize CPU settings
+    vb.cpus = 2
+
+    # Customize graphics settings
+    vb.customize ['modifyvm', :id, '--vram', '32']
+    vb.customize ['modifyvm', :id, '--accelerate3d', 'off']
+
+    # Enable sound
+    #vb.customize ['modifyvm', :id, '--audio', 'default_vb_audio', '--audiocontroller', 'default_vb_audiocontroler']
+
+    vb.customize ["modifyvm", :id, "--natdnshostresolver1", "on"]
+    vb.customize ["modifyvm", :id, "--ioapic", "on"]
+    # Enable host desktop integration
+    vb.customize ["modifyvm", :id, "--clipboard", "bidirectional"]
+    vb.customize ["modifyvm", :id, "--draganddrop", "bidirectional"]
+  end
+  {% else -%}
   # config.vm.provider "virtualbox" do |vb|
   #   # Display the VirtualBox GUI when booting the machine
   #   vb.gui = true
@@ -59,6 +112,7 @@ config.vm.network "private_network", ip: "192.168.33.10"
   #   # Customize the amount of memory on the VM:
   #   vb.memory = "1024"
   # end
+  {% endif %}
   #
   # View the documentation for the provider you are using for more
   # information on available options.
