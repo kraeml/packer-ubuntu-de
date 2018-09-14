@@ -3,7 +3,7 @@ if [ "${DEBUG:=false}" = "true" ]; then
   set -o xtrace
 fi
 VAGRANT_BUILD_PATH=~/.rdf-builds/builds
-VAGRANT_EDU_PATH=~/Dokumente/Schule/rdf-edu
+VAGRANT_EDU_PATH=${VAGRANT_EDU_PATH:=~/Dokumente/Schule}/rdf-edu
 #Falls kein zweites Kommando angegeben setze vagrant Command aus dem zustarten.
 #Pfad dann im Buildpath um dort zu starten. Type ist desktop.
 VAGRANT_PATH=$VAGRANT_BUILD_PATH
@@ -32,22 +32,38 @@ then
 	echo    # (optional) move to a new line
 	if [[ $REPLY =~ ^[Yy]$ ]]
 	then
-		cd $VAGRANT_EDU_PATH
-		vagrant destroy --force
-		cd $VAGRANT_PATH/$(echo $PRE_TYPE | sed 's/_/\//g')$(echo $TYPE | sed 's/_/\//g')/box
-		vagrant box remove file://virtualbox-$FULL_TYPE.box 2>/dev/null | true
-		vagrant box add file://virtualbox-$FULL_TYPE.box --name file://virtualbox-$FULL_TYPE.box
-		cd $VAGRANT_EDU_PATH
-		# ToDo Mit Vorlagen oder bestehendes Vagrantfile nehmen.
-		if [ -f Vagrantfile.template ]
-		then
-			vagrant init --force file://virtualbox-$FULL_TYPE.box --template Vagrantfile.template
-		else
-			vagrant init --force file://virtualbox-$FULL_TYPE.box
+    cd $VAGRANT_EDU_PATH
+    vagrant destroy --force
+    cd $VAGRANT_PATH/$(echo $PRE_TYPE | sed 's/_/\//g')$(echo $TYPE | sed 's/_/\//g')/box
+    read -p "New box import? " -n 1 -r
+  	echo    # (optional) move to a new line
+  	if [[ $REPLY =~ ^[Yy]$ ]]
+    then
+  		vagrant box remove file://virtualbox-$FULL_TYPE.box 2>/dev/null | true
+  		vagrant box add file://virtualbox-$FULL_TYPE.box --name file://virtualbox-$FULL_TYPE.box
+    fi
+    # ToDo Mit Vorlagen oder bestehendes Vagrantfile nehmen.
+    read -p "New Vagrantfile? " -n 1 -r
+  	echo    # (optional) move to a new line
+  	if [[ $REPLY =~ ^[Yy]$ ]]
+  	then
+      cd $VAGRANT_PATH/$(echo $PRE_TYPE | sed 's/_/\//g')$(echo $TYPE | sed 's/_/\//g')/box
+      cp Vagrantfile $VAGRANT_EDU_PATH
 		fi
+    cd $VAGRANT_EDU_PATH
 		vagrant up
 		vagrant ssh
 	fi
+elif [[ $COMMAND == reload ]]; then
+  read -p "New Vagrantfile from origin? " -n 1 -r
+	echo    # (optional) move to a new line
+	if [[ $REPLY =~ ^[Yy]$ ]]
+  then
+    cd $VAGRANT_PATH/$(echo $PRE_TYPE | sed 's/_/\//g')$(echo $TYPE | sed 's/_/\//g')/box
+    cp Vagrantfile $VAGRANT_EDU_PATH
+  fi
+  cd $VAGRANT_EDU_PATH
+  vagrant reload
 else
 	cd $VAGRANT_EDU_PATH
 	if [ $COMMAND == "ssh" ]
