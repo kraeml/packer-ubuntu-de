@@ -8,6 +8,7 @@
         include_vars: ubuntu_1804.yml
         tags:
           - test_var
+          - vagrantfile
 
       - name: "build: Create virtualbox-ubuntu_1804_xy"
         debug:
@@ -43,5 +44,6 @@
         build_item: "{{ubuntu_1804[BASE_NAME]}}"
         tags:
           - test_var
+          - vagrantfile
         #environment:
         #  http_proxy: "{{ansible_default_ipv4.address}}:8888"
