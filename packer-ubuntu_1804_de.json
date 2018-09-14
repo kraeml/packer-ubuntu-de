@@ -77,7 +77,8 @@
         ],
         "inline_shebang": "/bin/bash -e",
         "inline": [
-          "echo $VERSION > builds-config/version-{{ user `box_name` }}"
+          "echo $VERSION > builds-config/version-{{ user `box_name` }}",
+          "echo $VERSION > builds/{{user `box_name`}}/version"
         ],
         "type": "shell-local"
       }
@@ -104,7 +105,7 @@
   ],
   "variables": {
     "cloud_token": "{{ env `ATLAS_TOKEN` }}",
-    "version": "{{isotime \"06.01.0215\"}}",
+    "version": "{{isotime \"06.01.02-15-04\"}}",
     "ansible_skip_tags": "ansible,not_packer,todo",
     "my-bucket": "kraeml-vagrant-boxen",
     "box_organization": "kraeml",
