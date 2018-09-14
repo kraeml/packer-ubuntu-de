@@ -1,24 +1,29 @@
 #!/bin/bash
-set -x
-VAGRANT_BUILD_PATH=~/Dokumente/Schule/Bento-Boxen/packer-ubuntu-devops-academy/packer-ubuntu-de/builds
+if [ "${DEBUG:=false}" = "true" ]; then
+  set -o xtrace
+fi
+VAGRANT_BUILD_PATH=~/.rdf-builds/builds
 VAGRANT_EDU_PATH=~/Dokumente/Schule/rdf-edu
 #Falls kein zweites Kommando angegeben setze vagrant Command aus dem zustarten.
 #Pfad dann im Buildpath um dort zu starten. Type ist desktop.
 VAGRANT_PATH=$VAGRANT_BUILD_PATH
 # Wird hier ubuntu_1804 nicht verwendet
-TYPE=ubuntu_1804_de
+PRE_TYPE=ubuntu_1804_
+TYPE=de
 if [ -z $2 ]
 then
 	COMMAND=$1
 	#export VAGRANT_VAGRANTFILE=$VAGRANT_BUILD_PATH/ubuntu_1804_de/Vagrantfile
 else
 	COMMAND=$2
-	TYPE=ubuntu_1804_$1
+	TYPE=$1
 	#export VAGRANT_VAGRANTFILE=$VAGRANT_BUILD_PATH/ubuntu_1804_$1/Vagrantfile
 fi
-if [ ! -d $VAGRANT_EDU_PATH/$TYPE ]
+VAGRANT_EDU_PATH=$VAGRANT_EDU_PATH/$(echo $PRE_TYPE | sed 's/_/\//g')$TYPE
+FULL_TYPE=$PRE_TYPE$TYPE
+if [ ! -d $VAGRANT_EDU_PATH ]
 then
-	mkdir $VAGRANT_EDU_PATH/$TYPE
+	mkdir -p $VAGRANT_EDU_PATH
 fi
 OLD=$PWD
 if [ $COMMAND == "neu" ]
@@ -27,34 +32,24 @@ then
 	echo    # (optional) move to a new line
 	if [[ $REPLY =~ ^[Yy]$ ]]
 	then
-		cd $VAGRANT_EDU_PATH/$TYPE
+		cd $VAGRANT_EDU_PATH
 		vagrant destroy --force
-		cd $VAGRANT_PATH/$TYPE
-		vagrant box remove file://virtualbox-$TYPE.box
-		# Falls ein Type angegeben wurde neuen suchen
-		# Ansonsten im Buildverzeichnie einfach starten
-		#if [ ! -z $2 ]
-		#then
-		#	cd $VAGRANT_BUILD_PATH
-		#	set -e
-		#	ansible-playbook ansible-local/playbook.yml  --extra-vars="type=$TYPE"
-		#	set +e
-		#	cd -
-		#fi
-		vagrant box add file://virtualbox-$TYPE.box --name file://virtualbox-$TYPE.box
-		cd $VAGRANT_EDU_PATH/$TYPE
+		cd $VAGRANT_PATH/$(echo $PRE_TYPE | sed 's/_/\//g')$(echo $TYPE | sed 's/_/\//g')/box
+		vagrant box remove file://virtualbox-$FULL_TYPE.box 2>/dev/null | true
+		vagrant box add file://virtualbox-$FULL_TYPE.box --name file://virtualbox-$FULL_TYPE.box
+		cd $VAGRANT_EDU_PATH
 		# ToDo Mit Vorlagen oder bestehendes Vagrantfile nehmen.
 		if [ -f Vagrantfile.template ]
 		then
-			vagrant init --force file://virtualbox-$TYPE.box --template Vagrantfile.template
+			vagrant init --force file://virtualbox-$FULL_TYPE.box --template Vagrantfile.template
 		else
-			vagrant init --force file://virtualbox-$TYPE.box
+			vagrant init --force file://virtualbox-$FULL_TYPE.box
 		fi
 		vagrant up
 		vagrant ssh
 	fi
 else
-	cd $VAGRANT_EDU_PATH/$TYPE
+	cd $VAGRANT_EDU_PATH
 	if [ $COMMAND == "ssh" ]
 	then
 		vagrant up || true
