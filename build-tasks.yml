@@ -31,6 +31,7 @@
       box_ovf_path: "{{build_item.dependencies.box_ovf_path | default (box_ovf_default)}}"
   tags:
     - test_var
+    - vagrantfile
 
 - name: "build-task: Start build info"
   debug:
@@ -69,6 +70,8 @@
       dest: "builds-config/Vagrantfile-{{BASE}}"
     - vagrant_path: ""
       dest: "builds/{{BASE}}/Vagrantfile"
+  tags:
+    - vagrantfile
 
 - block:
   - name: "build-task: build {{BASE}}"
