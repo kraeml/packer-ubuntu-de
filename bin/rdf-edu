@@ -39,7 +39,7 @@ then
   	echo    # (optional) move to a new line
   	if [[ $REPLY =~ ^[Yy]$ ]]
     then
-  		vagrant box remove file://virtualbox-$FULL_TYPE.box 2>/dev/null | true
+  		vagrant box remove file://virtualbox-$FULL_TYPE.box || true
   		vagrant box add file://virtualbox-$FULL_TYPE.box --name file://virtualbox-$FULL_TYPE.box
     fi
     # ToDo Mit Vorlagen oder bestehendes Vagrantfile nehmen.
