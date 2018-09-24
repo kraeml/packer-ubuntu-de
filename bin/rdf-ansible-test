@@ -1,0 +1,16 @@
+#!/bin/bash
+if [ "${DEBUG:=false}" = "true" ]; then
+  set -o xtrace
+fi
+
+export VAGRANT_VAGRANTFILE=builds-config/Vagrantfile-ubuntu_1804_$1
+BUILD_NAME=file://builds/ubuntu_1804_$1/virtualbox-ubuntu_1804_$1.box
+
+cd ~/Dokumente/Schule/Bento-Boxen/packer-ubuntu-devops-academy/packer-ubuntu-de
+if [[ $2 == "neu" ]]; then
+  vagrant destroy --force
+  vagrant box remove $BUILD_NAME && vagrant box add $BUILD_NAME --name $BUILD_NAME
+  vagrant up
+else
+  vagrant $2
+fi
