@@ -26,7 +26,7 @@ files = {
 
 tools = {
     :python3 => {
-        :version => '3.6.5',
+        :version => '3.6.6',
         :command => 'python3 --version'
     },
     :jupyter => {

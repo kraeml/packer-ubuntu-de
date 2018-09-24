@@ -1,0 +1,10 @@
+#!/bin/bash
+if [ "${DEBUG:=false}" = "true" ]; then
+  set -o xtrace
+fi
+
+VAGRANT_EDU_PATH=/home/michl/Dokumente/Schule/1_Semester/INA rdf-edu de_base_ina_jupyter_xdesktop $1
+if [[ $1 == "up" ]] || [[ $1 == "neu" ]] || [[ $1 == "reload" ]]; then
+  firefox 192.168.33.51:8888 2>/dev/null &
+  firefox 192.168.33.51/~vagrant/ 2>/dev/null &
+fi

@@ -48,7 +48,43 @@
         with_items:
           - name: hugo
             uid: 5000
+          - name: susi
+            uid: 5001
+      - name: "Create tuxcademy folders"
+        become: yes
+        file:
+          path: "/home/hugo/{{item.path}}"
+          state: directory
+          owner: "{{item.owner}}"
+          group: "{{item.owner}}"
+        with_items:
+          - path: briefe
+            owner: hugo
+          - path: romane
+            owner: hugo
+          - path: briefe
+            owner: susi
+          - path: romane
+            owner: susi
+          - path: prog
+            owner: hugo
+
       - name: "Create tuxcademy files"
+        become: yes
+        file:
+          path: "/home/{{item.owner}}/{{item.path}}"
+          state: touch
+          owner: "{{item.owner}}"
+          group: "{{item.owner}}"
+        with_items:
+          - path: romane/werther.txt
+            owner: hugo
+          - path: briefe/brief.tab
+            owner: hugo
+          - path: briefe/omabrief
+            owner: hugo
+
+      - name: "Create tuxcademy special files"
         become: yes
         file:
           path: /home/hugo/datei.txt

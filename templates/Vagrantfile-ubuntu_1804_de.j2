@@ -32,29 +32,31 @@ Vagrant.configure("2") do |config|
 
   # Create a private network, which allows host-only access to the machine
   # using a specific IP.
-  {% if 'jupyter' in CONTROLS or 'ina' in CONTROLS -%}
-    {% if 'de' in CONTROLS -%}
-      {% set ip = 10 -%}
-    {% endif -%}
-    {% if 'base' in CONTROLS -%}
-      {% set ip = 20 -%}
-    {% endif -%}
-    {% if 'extented' in CONTROLS -%}
-      {% set ip = 30 -%}
-    {% endif -%}
-    {% if 'devops' in CONTROLS -%}
-      {% set ip = 40 -%}
-    {% endif -%}
-    {% if 'ina' in CONTROLS -%}
-      {% set ip = 50 -%}
-    {% endif -%}
-    {% if 'jupyter' in CONTROLS -%}
-      {% set ip = ip + 1 -%}
-    {% endif -%}
+  {% if 'de' in CONTROLS -%}
+    {% set ip = 10 -%}
+    {% set hostname = "de" -%}
+  {% endif -%}
+  {% if 'base' in CONTROLS -%}
+    {% set ip = 20 -%}
+    {% set hostname = "base" -%}
+  {% endif -%}
+  {% if 'extented' in CONTROLS -%}
+    {% set ip = 30 -%}
+    {% set hostname = "extended" -%}
+  {% endif -%}
+  {% if 'devops' in CONTROLS -%}
+    {% set ip = 40 -%}
+    {% set hostname = "devops" -%}
+  {% endif -%}
+  {% if 'ina' in CONTROLS -%}
+    {% set ip = 50 -%}
+    {% set hostname = "ina" -%}
+  {% endif -%}
+  {% if 'jupyter' in CONTROLS -%}
+    {% set ip = ip + 1 -%}
+  {% endif -%}
   config.vm.network "private_network", ip: "192.168.33.{{ip}}"
-    {% else -%}
-  # config.vm.network "private_network", ip: "192.168.33.10"
-  {% endif %}
+  config.vm.hostname = "{{hostname}}"
 
   # Create a public network, which generally matched to bridged network.
   # Bridged networks make the machine appear as another physical device on
@@ -71,7 +73,7 @@ Vagrant.configure("2") do |config|
   config.vm.synced_folder "./workspace", "/home/vagrant/workspace", create: true
   {% else -%}
   # config.vm.synced_folder "../data", "/vagrant_data"
-  {% endif %}
+  {% endif -%}
   {% if 'jupyter' in CONTROLS -%}
   config.vm.synced_folder "./notebooks", "/home/vagrant/notebooks", create: true
   {% endif -%}

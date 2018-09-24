@@ -52,7 +52,7 @@ then
 		fi
     cd $VAGRANT_EDU_PATH
 		vagrant up
-		vagrant ssh
+		# vagrant ssh
 	fi
 elif [[ $COMMAND == reload ]]; then
   read -p "New Vagrantfile from origin? " -n 1 -r
