@@ -8,7 +8,7 @@
 title 'Desktop Section'
 
 packages = [
-  "ubuntu-desktop",
+  # "ubuntu-desktop",
   "unity-lens-applications",
   "file-roller",
   "gnome-system-monitor"
