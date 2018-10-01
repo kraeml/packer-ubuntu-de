@@ -77,6 +77,12 @@
       golang_gopath: '$HOME/workspace-go'
 
     tasks:
+    - name: Network-manager dismiss
+      become: yes
+      apt:
+        name: network-manager
+        state: absent
+        purge: yes
     - name: Autologin for {{ansible_user_id}}
       become: yes
       blockinfile:
