@@ -56,8 +56,8 @@
           - open-iscsi
           #- redis-server
           #- rabbitmq-server
-          # ToDo dnsmasq daktivieren wegen systemd-resolv
-          - dnsmasq
+          # ToDo dnsmasq deaktivieren wegen systemd-resolv
+          #- dnsmasq
 
       - name: "Extend ubuntu template"
         become: yes
@@ -94,3 +94,20 @@
         #ignore_errors: yes
       tags:
         - lxc-dev
+    - block:
+      - name: "Start docker deamon"
+        become: yes
+        service:
+          name: docker
+          state: started
+      - name: Clone codespace.io
+        git:
+          dest: "{{ansible_user_dir}}/codespace"
+          repo: https://github.com/codespaces-io/codespaces.git
+      - name: Pull codespace.io
+        become: yes
+        command: docker-compose pull
+        args:
+          chdir: "{{ansible_user_dir}}/codespace/cs-ansible"
+      tags:
+        - codespace
