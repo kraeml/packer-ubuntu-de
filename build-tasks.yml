@@ -25,7 +25,8 @@
       # Used later in box_ovf_path
       box_ovf_default: "{{ovf_path}}file:-VAGRANTSLASH--VAGRANTSLASH-builds-VAGRANTSLASH-{{build_item.dependencies.box_lts}}-VAGRANTSLASH-virtualbox-{{build_item.dependencies.box_lts}}.box/0/virtualbox/"
 
-  - set_fact:
+  - name: "build-tasks:Set facts after variable"
+    set_fact:
       box_version: "{{build_item.dependencies.box_version | default (lookup('file', 'builds-config/version-{{box_lts}}'))}}"
       box_name: "{{box_organization}}/{{BASE}}"
       box_ovf_path: "{{build_item.dependencies.box_ovf_path | default (box_ovf_default)}}"
@@ -55,6 +56,8 @@
   file:
     path: "builds/{{BASE}}"
     state: directory
+  tags:
+    - vagrantfile
 
 - name: "build-task: Create builds Vagrantfile-{{BASE}}"
   vars:
