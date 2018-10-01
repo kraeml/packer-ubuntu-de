@@ -69,8 +69,7 @@ packages = [
   "yum",
   "rpm",
   "qemu-user-static",
-  "open-iscsi",
-  "dnsmasq"
+  "open-iscsi"
 ]
 
 control 'files' do
