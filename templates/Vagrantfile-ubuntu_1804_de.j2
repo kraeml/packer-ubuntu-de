@@ -40,7 +40,7 @@ Vagrant.configure("2") do |config|
     {% set ip = 20 -%}
     {% set hostname = "base" -%}
   {% endif -%}
-  {% if 'extented' in CONTROLS -%}
+  {% if 'extended' in CONTROLS -%}
     {% set ip = 30 -%}
     {% set hostname = "extended" -%}
   {% endif -%}
@@ -50,6 +50,10 @@ Vagrant.configure("2") do |config|
   {% endif -%}
   {% if 'ina' in CONTROLS -%}
     {% set ip = 50 -%}
+    {% set hostname = "ina" -%}
+  {% endif -%}
+  {% if 'electronic' in CONTROLS -%}
+    {% set ip = 60 -%}
     {% set hostname = "ina" -%}
   {% endif -%}
   {% if 'jupyter' in CONTROLS -%}
