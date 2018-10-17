@@ -52,6 +52,7 @@ then
 		fi
     cd $VAGRANT_EDU_PATH
 		vagrant up
+    # vagrant reload
 		# vagrant ssh
 	fi
 elif [[ $COMMAND == reload ]]; then
@@ -63,7 +64,8 @@ elif [[ $COMMAND == reload ]]; then
     cp Vagrantfile $VAGRANT_EDU_PATH
   fi
   cd $VAGRANT_EDU_PATH
-  vagrant reload
+  # Workaround for network error - not needed any more
+  # vagrant reload
 else
 	cd $VAGRANT_EDU_PATH
 	if [ $COMMAND == "ssh" ]
