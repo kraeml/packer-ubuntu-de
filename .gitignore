@@ -13,3 +13,4 @@ tmp/
 log/
 ansible/test.yml
 downloads/
+venv/
