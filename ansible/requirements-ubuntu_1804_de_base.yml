@@ -1,5 +1,6 @@
 ---
-- src: franklinkim.git
-  version: '1.2.2'
+# ToDo Replace with other role
+#- src: franklinkim.git
+#  version: '1.2.2'
 - src: gantsign.oh-my-zsh
-  version: '1.2.1'
+  version: '2.2.0'

@@ -3,20 +3,21 @@
   #become: yes
   gather_facts: yes
   roles:
-    - role: franklinkim.git
-      become: yes
-      git_config:
-        core:
-          autocrlf: input
-        alias:
-          ls: 'log --pretty=format:"%C(yellow)%h%Cred%d\\ %Creset%s%Cblue\\ [%cn]" --decorate'
-          ll: 'log --pretty=format:"%C(yellow)%h%Cred%d\\ %Creset%s%Cblue\\ [%cn]" --decorate --numstat'
-          lds: 'log --pretty=format:"%C(yellow)%h\\ %ad%Cred%d\\ %Creset%s%Cblue\\ [%cn]" --decorate --date=short'
-          lt: 'log --oneline --graph --decorate --all'
-          cane: 'git commit --amend --no-edit'
-          rom: 'rebase origin/master'
-      tags:
-        - git
+    # ToDo: Replace with other role for git
+    #- role: franklinkim.git
+    #  become: yes
+    #  git_config:
+    #    core:
+    #      autocrlf: input
+    #    alias:
+    #      ls: 'log --pretty=format:"%C(yellow)%h%Cred%d\\ %Creset%s%Cblue\\ [%cn]" --decorate'
+    #      ll: 'log --pretty=format:"%C(yellow)%h%Cred%d\\ %Creset%s%Cblue\\ [%cn]" --decorate --numstat'
+    #      lds: 'log --pretty=format:"%C(yellow)%h\\ %ad%Cred%d\\ %Creset%s%Cblue\\ [%cn]" --decorate --date=short'
+    #      lt: 'log --oneline --graph --decorate --all'
+    #      cane: 'git commit --amend --no-edit'
+    #      rom: 'rebase origin/master'
+    #  tags:
+    #    - git
     - role: gantsign.oh-my-zsh
       users:
         - username: "{{ ansible_user_id }}"
@@ -84,6 +85,8 @@
         #- proftpd-basic
         - ipcalc
         - dnsutils
+        - shellcheck
+        - bats
 
     - name: Git config
       git_config:
