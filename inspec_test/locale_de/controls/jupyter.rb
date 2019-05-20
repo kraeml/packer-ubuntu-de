@@ -26,7 +26,7 @@ files = {
 
 tools = {
     :python3 => {
-        :version => '3.6.6',
+        :version => '3.6.7',
         :command => 'python3 --version'
     },
     :jupyter => {
@@ -60,7 +60,7 @@ tools = {
         :command => 'jupyter nbextension list'
     },
     :nodejs => {
-        :version => '8.12.0',
+        :version => '8.16.0',
         :command => 'nodejs -v'
     },
     :npm => {
