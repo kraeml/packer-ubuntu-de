@@ -24,6 +24,11 @@
 
   - name: "check_box_tasks: Ensure virtualbox-ovf directory exists"
     file:
+      path: "./virtualbox-ovf"
+      state: directory
+
+  - name: "check_box_tasks: Ensure virtualbox-ovf directory exists"
+    file:
       path: "./virtualbox-ovf/pre_{{BASE}}"
       src: "{{box_ovf_path}}"
       state: link
