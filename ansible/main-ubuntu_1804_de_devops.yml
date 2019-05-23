@@ -10,7 +10,7 @@
         - inspec
         - serverspec
         #- capybara
-        - selenium-webdriver
+        #- selenium-webdriver
         - cucumber
         - rspec
         - sinatra
@@ -25,7 +25,7 @@
         - kitchen-docker
         - kitchen-sync
         - kitchen-verifier-serverspec
-        - kitchen-lxc
+        #- kitchen-lxc
         - kitchen-inspec
         #- fog
         #- foodcritic

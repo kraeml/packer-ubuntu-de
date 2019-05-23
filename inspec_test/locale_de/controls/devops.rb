@@ -17,7 +17,7 @@ tools = {
         :command => 'packer --version'
     },
     :ansible => {
-        :version => '2.7.0',
+        :version => '2.8.0',
         :command => 'ansible --version'
     }
 }
@@ -25,7 +25,7 @@ tools = {
 gem_packages = [
   "inspec",
   "serverspec",
-  "selenium-webdriver",
+  #"selenium-webdriver",
   "cucumber",
   "rspec",
   "sinatra",
@@ -39,7 +39,7 @@ gem_packages = [
   "kitchen-docker",
   "kitchen-sync",
   "kitchen-verifier-serverspec",
-  "kitchen-lxc",
+  #"kitchen-lxc",
   "kitchen-inspec"
 ]
 
