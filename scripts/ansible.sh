@@ -2,8 +2,13 @@
 
 # Install Ansible repository.
 tee "/etc/apt/apt.conf.d/01proxy" > "/dev/null" <<EOF
-Acquire::http { Proxy "http://michl-laptop.fritz.box:3142"; };
+Acquire::http { Proxy "http://michl-laptop:3142"; };
 Acquire::https { Proxy "https://"; };
+EOF
+tee "/etc/pip.conf" > "/dev/null" <<EOF
+[global]
+index-url=http://michl-laptop:3141/root/pypi/
+trusted-host=michl-laptop
 EOF
 if ansible --version ; then
 	apt-get -y update
