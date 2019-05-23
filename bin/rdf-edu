@@ -2,7 +2,7 @@
 if [ "${DEBUG:=false}" = "true" ]; then
   set -o xtrace
 fi
-VAGRANT_BUILD_PATH=~/.rdf-builds/builds
+VAGRANT_BUILD_PATH=~/.rdf-builds/
 VAGRANT_EDU_PATH=${VAGRANT_EDU_PATH:=~/Dokumente/Schule}/rdf-edu
 #Falls kein zweites Kommando angegeben setze vagrant Command aus dem zustarten.
 #Pfad dann im Buildpath um dort zu starten. Type ist desktop.
@@ -34,7 +34,7 @@ then
 	then
     cd $VAGRANT_EDU_PATH
     vagrant destroy --force
-    cd $VAGRANT_PATH/$(echo $PRE_TYPE | sed 's/_/\//g')$(echo $TYPE | sed 's/_/\//g')/box
+    cd $VAGRANT_PATH/${PRE_TYPE}${TYPE}
     read -p "New box import? " -n 1 -r
   	echo    # (optional) move to a new line
   	if [[ $REPLY =~ ^[Yy]$ ]]
@@ -47,7 +47,7 @@ then
   	echo    # (optional) move to a new line
   	if [[ $REPLY =~ ^[Yy]$ ]]
   	then
-      cd $VAGRANT_PATH/$(echo $PRE_TYPE | sed 's/_/\//g')$(echo $TYPE | sed 's/_/\//g')/box
+      cd $VAGRANT_PATH/${PRE_TYPE}${TYPE}
       cp Vagrantfile $VAGRANT_EDU_PATH
 		fi
     cd $VAGRANT_EDU_PATH
