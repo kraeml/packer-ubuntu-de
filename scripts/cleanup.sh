@@ -24,12 +24,12 @@ apt-get --yes clean
 apt-get --yes autoclean
 
 # Clean up log files
-find /var/log -type f | while read f; do echo -ne '' > "${f}"; done;
+find /var/log -type f | while read -r f; do echo -ne '' > "${f}"; done;
 
 echo "==> Clearing last login information"
->/var/log/lastlog
->/var/log/wtmp
->/var/log/btmp
+echo -ne '' > /var/log/lastlog
+echo -ne '' > /var/log/wtmp
+echo -ne '' > /var/log/btmp
 
 # Zero out the rest of the free space using dd, then delete the written file.
 echo "==> Whiteout root"
@@ -51,7 +51,7 @@ if [ "x${swapuuid}" != "x" ]; then
     # Swap is disabled till reboot
     echo "swapuuid: $swapuuid"
     echo "swappart: $swappart"
-    swappart=$(readlink -f /dev/disk/by-uuid/$swapuuid)
+    swappart=$(readlink -f "/dev/disk/by-uuid/$swapuuid")
     /sbin/swapoff "${swappart}"
     dd if=/dev/zero of="${swappart}" bs=1M || echo "dd exit code $? is suppressed"
     /sbin/mkswap -U "${swapuuid}" "${swappart}"
