@@ -18,12 +18,12 @@
     - de_devops_jupyter
     - de_devops_xdesktop
     - de_devops_jupyter_xdesktop
-    - de_base_ina
-    - de_base_ina_jupyter
-    - de_base_ina_xdesktop
-    - de_base_ina_jupyter_xdesktop
-    - de_ina_xdesktop_electronic
-    - de_ina_jupyter_xdesktop_electronic
+    #- de_base_ina
+    #- de_base_ina_jupyter
+    #- de_base_ina_xdesktop
+    #- de_base_ina_jupyter_xdesktop
+    #- de_ina_xdesktop_electronic
+    #- de_ina_jupyter_xdesktop_electronic
 
   base_version: "1.0.7"
 
