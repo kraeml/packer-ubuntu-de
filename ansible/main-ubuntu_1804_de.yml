@@ -34,9 +34,8 @@
     - name: "Install german packages"
       become: yes
       apt:
-        name: "{{item}}"
-      with_items:
-        - manpages-de
+        name:
+          - manpages-de
     - block:
       - name: "Create tuxcademy user(s)"
         become: yes
