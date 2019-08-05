@@ -1,6 +1,13 @@
 ---
 - hosts: localhost
   tasks:
+    - debug:
+        var: "{{item}}"
+        verbosity: 1
+      with_items:
+        - box_name
+        - BASE
+
     - include_vars: # This module allows you to specify the 'file' option directly without any other options. There is no 'free-form' option, this is just an indicator, see example below.
       args:
         file: "{{BASE}}.yml"
