@@ -10,10 +10,9 @@ tee "/etc/pip.conf" > "/dev/null" <<EOF
 index-url=http://michl-laptop:3141/root/pypi/
 trusted-host=michl-laptop
 EOF
-if ansible --version ; then
+if ansible --version 2>/dev/null ; then
 	apt-get -y update
 else
-	apt-get -y update && apt-get -y --force yes upgrade
 	apt-get -y install software-properties-common
 	apt-add-repository ppa:ansible/ansible
 	# Install Ansible.

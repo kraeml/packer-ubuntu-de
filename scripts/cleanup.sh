@@ -35,7 +35,7 @@ echo -ne '' > /var/log/btmp
 echo "==> Whiteout root"
 count=$(df --sync -kP / | tail -n1  | awk -F ' ' '{print $4}')
 let count
-dd if=/dev/zero of=/EMPTY bs=1M count=$count
+dd if=/dev/zero of=/EMPTY bs=1M count=$count 2>/dev/null
 rm -f /EMPTY
 
 echo '==> Clear out swap and disable until reboot'
@@ -53,7 +53,7 @@ if [ "x${swapuuid}" != "x" ]; then
     echo "swappart: $swappart"
     swappart=$(readlink -f "/dev/disk/by-uuid/$swapuuid")
     /sbin/swapoff "${swappart}"
-    dd if=/dev/zero of="${swappart}" bs=1M || echo "dd exit code $? is suppressed"
+    dd if=/dev/zero of="${swappart}" bs=1M 2>/dev/null || echo "dd exit code $? is suppressed"
     /sbin/mkswap -U "${swapuuid}" "${swappart}"
 fi
 
