@@ -26,7 +26,7 @@ files = {
 
 tools = {
     :python3 => {
-        :version => '3.6.7',
+        :version => '3.6.8',
         :command => 'python3 --version'
     },
     :jupyter => {
@@ -40,7 +40,7 @@ tools = {
         :command => 'pip3 show jupyter'
     },
     :pip3_bash_kernel => {
-        :version => '0.7.1',
+        :version => '0.7.2',
         :command => 'pip3 show bash_kernel'
     },
     :jupyter_bash_kernel => {
@@ -122,6 +122,8 @@ control 'jupyter' do                        # A unique ID for this control
   tools.each do |key, value|
       if value[:command]
           describe command(value[:command]) do
+            # TODO: May use of cmp > version
+            # then remove other regex
             its(:stdout) { should match /#{value[:version]}/ }
             if value[:commend]
                 its(:stdout) { should match /#{value[:commend]}/ }
