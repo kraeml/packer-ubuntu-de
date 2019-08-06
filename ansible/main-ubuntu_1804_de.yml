@@ -3,6 +3,10 @@
   #become: yes
   gather_facts: yes
   roles:
+    - role: geerlingguy.nfs
+      become: yes
+    - role: geerlingguy.packer-debian
+      become: yes
     - role: oefenweb.locales
       become: yes
       locales_present:
