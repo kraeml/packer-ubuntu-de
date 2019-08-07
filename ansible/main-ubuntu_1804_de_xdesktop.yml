@@ -98,28 +98,27 @@
       - name: "Install desktop needed packages"
         become: yes
         apt:
-            name: "{{ item }}"
-            state: installed
+            name:
+              - hunspell-de-ch
+              - wogerman
+              - hunspell-de-at
+              - hunspell-en-us
+              - wbritish
+              - hunspell-de-de
+              - language-pack-gnome-de
+              - wngerman
+              - hunspell-en-au
+              - wswiss
+              - hunspell-en-za
+              - hunspell-en-ca
+              - wamerican
+              - hunspell-en-gb
+              - file-roller
+              - clang
+              - texworks
+            state: present
             update_cache: yes
             cache_valid_time: 3600
-        with_items:
-            - hunspell-de-ch
-            - wogerman
-            - hunspell-de-at
-            - hunspell-en-us
-            - wbritish
-            - hunspell-de-de
-            - language-pack-gnome-de
-            - wngerman
-            - hunspell-en-au
-            - wswiss
-            - hunspell-en-za
-            - hunspell-en-ca
-            - wamerican
-            - hunspell-en-gb
-            - file-roller
-            - clang
-            - texworks
 
       - name: Deactivate powweroff dialog
         command: "{{item}}"
