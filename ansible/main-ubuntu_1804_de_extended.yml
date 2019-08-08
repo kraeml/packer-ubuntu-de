@@ -50,6 +50,7 @@
             - qemu-user-static
             #- haproxy
             - open-iscsi
+            - debian-archive-keyring
             #- redis-server
             #- rabbitmq-server
             # ToDo dnsmasq deaktivieren wegen systemd-resolv
