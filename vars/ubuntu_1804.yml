@@ -25,7 +25,7 @@
     #- de_ina_xdesktop_electronic
     #- de_ina_jupyter_xdesktop_electronic
 
-  base_version: "1.0.7"
+  base_version: "1.0.9"
 
   ubuntu_1804:
     # DE for german language setup

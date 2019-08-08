@@ -14,3 +14,4 @@ log/
 ansible/test.yml
 downloads/
 venv/
+packer_cache/

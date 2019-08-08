@@ -2,13 +2,17 @@
 if [ "${DEBUG:=false}" = "true" ]; then
   set -o xtrace
 fi
+#Basisordner der erstellten Maschinen
+#ToDo Müssen kopiert werden wenn neue Fassung.
 VAGRANT_BUILD_PATH=~/.rdf-builds/
+#ToDo Verzeichnis existiert nicht.
 VAGRANT_EDU_PATH=${VAGRANT_EDU_PATH:=~/Dokumente/Schule}/rdf-edu
-#Falls kein zweites Kommando angegeben setze vagrant Command aus dem zustarten.
+#Falls kein zweites Kommando angegeben, setze vagrant Command aus dem zustarten
 #Pfad dann im Buildpath um dort zu starten. Type ist desktop.
 VAGRANT_PATH=$VAGRANT_BUILD_PATH
-# Wird hier ubuntu_1804 nicht verwendet
+# Ubuntu LTS Version soll verwendet werden.
 PRE_TYPE=ubuntu_1804_
+#Einfachste box.
 TYPE=de
 if [ -z $2 ]
 then
@@ -19,7 +23,9 @@ else
 	TYPE=$1
 	#export VAGRANT_VAGRANTFILE=$VAGRANT_BUILD_PATH/ubuntu_1804_$1/Vagrantfile
 fi
+#ToDo Unterordner werden erstellt.
 VAGRANT_EDU_PATH=$VAGRANT_EDU_PATH/$(echo $PRE_TYPE | sed 's/_/\//g')$TYPE
+#Zusammensetzen vom Typen.
 FULL_TYPE=$PRE_TYPE$TYPE
 if [ ! -d $VAGRANT_EDU_PATH ]
 then
@@ -33,13 +39,21 @@ then
 	if [[ $REPLY =~ ^[Yy]$ ]]
 	then
     cd $VAGRANT_EDU_PATH
-    vagrant destroy --force
-    cd $VAGRANT_PATH/${PRE_TYPE}${TYPE}
+    if [ -f Vagrantfile ]
+    then
+      vagrant destroy --force
+    fi
+    if [ ! -d $VAGRANT_PATH${PRE_TYPE}${TYPE} ]
+    then
+      mkdir $VAGRANT_PATH${PRE_TYPE}${TYPE}
+    fi
+    cd $VAGRANT_PATH${PRE_TYPE}${TYPE}
     read -p "New box import? " -n 1 -r
   	echo    # (optional) move to a new line
   	if [[ $REPLY =~ ^[Yy]$ ]]
     then
   		vagrant box remove file://virtualbox-$FULL_TYPE.box || true
+      cp ~/Dokumente/Schule/1_Semester/BSA_1/packer-bsa/packer-ubuntu-de/builds/$FULL_TYPE/* .
   		vagrant box add file://virtualbox-$FULL_TYPE.box --name file://virtualbox-$FULL_TYPE.box
     fi
     # ToDo Mit Vorlagen oder bestehendes Vagrantfile nehmen.

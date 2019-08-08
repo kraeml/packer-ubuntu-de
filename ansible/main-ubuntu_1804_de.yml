@@ -3,6 +3,10 @@
   #become: yes
   gather_facts: yes
   roles:
+    - role: geerlingguy.nfs
+      become: yes
+    - role: geerlingguy.packer-debian
+      become: yes
     - role: oefenweb.locales
       become: yes
       locales_present:
@@ -34,9 +38,8 @@
     - name: "Install german packages"
       become: yes
       apt:
-        name: "{{item}}"
-      with_items:
-        - manpages-de
+        name:
+          - manpages-de
     - block:
       - name: "Create tuxcademy user(s)"
         become: yes

@@ -1,7 +1,9 @@
 ---
 - src: oefenweb.locales
-  version: 'v1.0.33'
-- src: oefenweb.timezone
   version: 'v1.0.34'
+- src: oefenweb.timezone
+  version: 'v1.0.35'
 - src: gantsign.keyboard
   version: '1.4.0'
+- src: geerlingguy.nfs
+- src: geerlingguy.packer-debian

@@ -14,28 +14,28 @@
       become: yes
       users:
         - username: vagrant
-          atom_packages:
-            - editorconfig
-            - minimap
-            - linter
-            - linter-ui-default
-            - busy-signal
-            - intentions
-            - atom-beautify
-            - file-icons
-            - atom-ide-ui
-            - ide-typescript
-            - ide-json
-            - ide-yaml
-            - ide-css
-            - ide-html
-            - ide-python
-            - atom-jinja2
-            - autocomplete-ansible
-            - linter-ansible-linting
-            - platformio-ide-terminal
-            #- platformio-ide
-            #- platformio-ide-debugger
+          #atom_packages:
+          #  - editorconfig
+          #  - minimap
+          #  - linter
+          #  - linter-ui-default
+          #  - busy-signal
+          #  - intentions
+          #  - atom-beautify
+          #  - file-icons
+          #  - atom-ide-ui
+          #  - ide-typescript
+          #  - ide-json
+          #  - ide-yaml
+          #  - ide-css
+          #  - ide-html
+          #  - ide-python
+          #  - atom-jinja2
+          #  - autocomplete-ansible
+          #  - linter-ansible-linting
+          #  - platformio-ide-terminal
+          #  #- platformio-ide
+          #  #- platformio-ide-debugger
           atom_config:
             "*":
               "atom-ide-ui":
@@ -58,16 +58,16 @@
         - atom
 
     # Install Go package for Atom
-    - role: gantsign.atom-packages
-      become: yes
-      tags:
-        - desktop
-        - atom
-        - golang
-      users:
-        - username: vagrant
-          atom_packages:
-            - go-plus
+    #- role: gantsign.atom-packages
+    #  become: yes
+    #  tags:
+    #    - desktop
+    #    - atom
+    #    - golang
+    #  users:
+    #    - username: vagrant
+    #      atom_packages:
+    #        - go-plus
 
     # Install Go language SDK
     - role: gantsign.golang
@@ -98,28 +98,27 @@
       - name: "Install desktop needed packages"
         become: yes
         apt:
-            name: "{{ item }}"
-            state: installed
+            name:
+              - hunspell-de-ch
+              - wogerman
+              - hunspell-de-at
+              - hunspell-en-us
+              - wbritish
+              - hunspell-de-de
+              - language-pack-gnome-de
+              - wngerman
+              - hunspell-en-au
+              - wswiss
+              - hunspell-en-za
+              - hunspell-en-ca
+              - wamerican
+              - hunspell-en-gb
+              - file-roller
+              - clang
+              - texworks
+            state: present
             update_cache: yes
             cache_valid_time: 3600
-        with_items:
-            - hunspell-de-ch
-            - wogerman
-            - hunspell-de-at
-            - hunspell-en-us
-            - wbritish
-            - hunspell-de-de
-            - language-pack-gnome-de
-            - wngerman
-            - hunspell-en-au
-            - wswiss
-            - hunspell-en-za
-            - hunspell-en-ca
-            - wamerican
-            - hunspell-en-gb
-            - file-roller
-            - clang
-            - texworks
 
       - name: Deactivate powweroff dialog
         command: "{{item}}"
