@@ -28,7 +28,7 @@
           path: builds-config/version
           state: touch
 
-      - name: "build-all: Ensure builds-config/version for pre_box exists"
+      - name: "build-all: Ensure builds-config/version file for pre_box exists"
         file:
           path: "builds-config/version-{{ubuntu_1804[item].dependencies.box_lts}}"
           state: touch
