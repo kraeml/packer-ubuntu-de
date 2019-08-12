@@ -70,11 +70,11 @@
     #        - go-plus
 
     # Install Go language SDK
-    - role: gantsign.golang
-      become: yes
-      tags:
-        - golang
-      golang_gopath: '$HOME/workspace-go'
+    #- role: gantsign.golang
+    #  become: yes
+    #  tags:
+    #    - golang
+    #  golang_gopath: '$HOME/workspace-go'
 
     tasks:
     - name: Network-manager dismiss
