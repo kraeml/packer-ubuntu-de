@@ -5,10 +5,12 @@
   vars:
   - container_prefix: "test-container-"
   - lxc_templates:
-    - ubuntu
-    - debian
-    - alpine
-    - centos
+    - name: ubuntu
+      release: bionic
+    - name: debian
+      release: stretch
+    #- alpine
+    #- centos
     #- fedora
   # Install Docker
   roles:
@@ -76,19 +78,20 @@
       - name: Create a stopped container
         become: yes
         lxc_container:
-          name: "{{container_prefix}}{{item}}"
+          name: "{{container_prefix}}{{item.name}}"
           container_log: true
-          template: "{{item}}"
+          template: "{{item.name}}"
           state: stopped
+          template_options: --release {{item.release}}
         with_items: "{{lxc_templates}}"
         #ignore_errors: yes
 
       - name: Remove container
         become: yes
         lxc_container:
-          name: "{{container_prefix}}{{item}}"
+          name: "{{container_prefix}}{{item.name}}"
           container_log: true
-          template: "{{item}}"
+          template: "{{item.name}}"
           state: absent
         with_items: "{{lxc_templates}}"
         #ignore_errors: yes
