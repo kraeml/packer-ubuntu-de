@@ -38,8 +38,10 @@
           msg: "{{ubuntu_1804}}"
           verbosity: 1
 
-      - include_tasks: build-tasks.yml
-        build_item: "{{ubuntu_1804[outer_item]}}"
+      - include_tasks:
+          file: build-tasks.yml
+        vars:
+          build_item: "{{ubuntu_1804[outer_item]}}"
         with_items: "{{all}}"
         loop_control:
           loop_var: outer_item

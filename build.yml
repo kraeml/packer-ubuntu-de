@@ -40,8 +40,11 @@
           msg: "{{ubuntu_1804[BASE_NAME]}}"
           verbosity: 0
 
-      - include_tasks: build-tasks.yml
-        build_item: "{{ubuntu_1804[BASE_NAME]}}"
+      - name: Import build-tasks.yml
+        include_tasks:
+          file: build-tasks.yml
+        vars:
+          build_item: "{{ubuntu_1804[BASE_NAME]}}"
         tags:
           - test_var
           - vagrantfile

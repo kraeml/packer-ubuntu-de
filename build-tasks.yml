@@ -6,9 +6,8 @@
 - name: Install dependencies
   become: yes
   apt:
-    name: "{{item}}"
-  with_items:
-    - jq
+    name:
+      - jq
   tags:
     - dependencies
 
