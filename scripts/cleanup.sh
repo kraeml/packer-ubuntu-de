@@ -1,4 +1,5 @@
 #!/bin/bash -eux
+export DEBIAN_FRONTEND=noninteractive
 if [[ -f /etc/apt/apt.conf.d/01proxy ]]; then
   rm /etc/apt/apt.conf.d/01proxy
 fi

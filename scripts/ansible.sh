@@ -1,5 +1,5 @@
 #!/bin/bash -eux
-
+export DEBIAN_FRONTEND=noninteractive
 # Install Ansible repository.
 tee "/etc/apt/apt.conf.d/01proxy" > "/dev/null" <<EOF
 Acquire::http { Proxy "http://michl-laptop:3142"; };
