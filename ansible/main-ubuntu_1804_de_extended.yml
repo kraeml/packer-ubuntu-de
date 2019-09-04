@@ -114,3 +114,9 @@
           chdir: "{{ansible_user_dir}}/codespace/cs-ansible"
       tags:
         - codespace
+
+    - name: Workaround docker-compose
+      become: yes
+      pip:
+        name: docker-compose
+        executable: pip3
