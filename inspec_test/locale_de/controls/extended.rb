@@ -101,7 +101,9 @@ control 'extended' do                        # A unique ID for this control
   tools.each do |key, value|
       if value[:command]
           describe command(value[:command]) do
-            its(:stdout) { should match /#{value[:version]}/ }
+            if value[:version]
+              its(:stdout) { should cmp >= value[:version] }
+            end
             if value[:commend]
                 its(:stdout) { should match /#{value[:commend]}/ }
             end

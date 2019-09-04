@@ -44,23 +44,23 @@ tools = {
         :command => 'pip3 show bash_kernel'
     },
     :jupyter_bash_kernel => {
-        :version => 'bash',
+        :commend => 'bash',
         :command => 'jupyter-kernelspec list'
     },
     :jupyter_python3 => {
-        :version => 'python3',
+        :commend => 'python3',
         :command => 'jupyter-kernelspec list'
     },
     :jupyter_javascript => {
-        :version => 'javascript',
+        :commend => 'javascript',
         :command => 'jupyter-kernelspec list'
     },
     :jupyter_widgets => {
-        :version => 'widgets.*enabled',
+        :commend => 'widgets.*enabled',
         :command => 'jupyter nbextension list'
     },
     :nodejs => {
-        :version => '8.16.0',
+        :version => '8.16.1',
         :command => 'nodejs -v'
     },
     :npm => {
@@ -124,7 +124,9 @@ control 'jupyter' do                        # A unique ID for this control
           describe command(value[:command]) do
             # TODO: May use of cmp > version
             # then remove other regex
-            its(:stdout) { should match /#{value[:version]}/ }
+            if value[:version]
+              its(:stdout) { should cmp >= value[:version] }
+            end
             if value[:commend]
                 its(:stdout) { should match /#{value[:commend]}/ }
             end
