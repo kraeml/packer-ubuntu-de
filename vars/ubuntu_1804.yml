@@ -22,8 +22,8 @@
     #- de_base_ina_jupyter
     #- de_base_ina_xdesktop
     #- de_base_ina_jupyter_xdesktop
-    #- de_ina_xdesktop_electronic
-    #- de_ina_jupyter_xdesktop_electronic
+    - de_electronic
+    - de_jupyter_electronic
 
   base_version: "1.0.9"
 
@@ -118,18 +118,18 @@
         requirements: "requirements-ubuntu_1804_de_xdesktop.yml"
         playbook: "main-ubuntu_1804_de_xdesktop.yml"
     # Electronic with electronic tools
-    de_ina_xdesktop_electronic:
-      name: "de_ina_xdesktop_electronic"
+    de_electronic:
+      name: "de_electronic"
       dependencies:
         box_developer: "kraeml"
-        box_lts: "ubuntu_1804_de_base_ina_xdesktop"
+        box_lts: "ubuntu_1804_de_base_xdesktop"
         requirements: "requirements-ubuntu_1804_de_electronic.yml"
         playbook: "main-ubuntu_1804_de_electronic.yml"
-    de_ina_jupyter_xdesktop_electronic:
-      name: "de_ina_jupyter_xdesktop_electronic"
+    de_jupyter_electronic:
+      name: "de_jupyter_electronic"
       dependencies:
         box_developer: "kraeml"
-        box_lts: "ubuntu_1804_de_ina_xdesktop_electronic"
+        box_lts: "ubuntu_1804_de_electronic"
         requirements: "requirements-ubuntu_1804_de_jupyter.yml"
         playbook: "main-ubuntu_1804_de_jupyter.yml"
     # EXTENDED with lxc support

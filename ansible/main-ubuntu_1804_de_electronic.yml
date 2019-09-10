@@ -6,35 +6,34 @@
         - name: Install Electronic packages
           become: yes
           apt:
-            name: "{{ item }}"
+            name:
+              - logisim
+              - gtkwave
+              - gnat
+              - kicad
+              - pcb
+              - geda
+              - geda-utils
+              - geda-examples
+              - gerbv
+              - avr-libc
+              - avrdude
+              - binutils-avr
+              - gcc-avr
+              - libftdi1
+              - libjna-java
+              - libjna-jni
+              - librxtx-java
+              - libqt5printsupport5
+              - libqt5serialport5
+              - libqt5sql5
+              - libqt5sql5-sqlite
+              - libqt5xml5
+              - xclip
+              - fritzing
             state: present
             update_cache: yes
             cache_valid_time: 3600
-          with_items:
-            - logisim
-            - gtkwave
-            - gnat
-            - kicad
-            - pcb
-            - geda
-            - geda-utils
-            - geda-examples
-            - gerbv
-            - avr-libc
-            - avrdude
-            - binutils-avr
-            - gcc-avr
-            - libftdi1
-            - libjna-java
-            - libjna-jni
-            - librxtx-java
-            - libqt5printsupport5
-            - libqt5serialport5
-            - libqt5sql5
-            - libqt5sql5-sqlite
-            - libqt5xml5
-            - xclip
-            - fritzing
         - name: Lookup for ghdl
           stat:
             path: /usr/local/bin/ghdl
@@ -108,7 +107,7 @@
         - name: Get arduino IDE
           become: yes
           unarchive:
-              src: https://downloads.arduino.cc/arduino-1.8.6-linux64.tar.xz
+              src: https://downloads.arduino.cc/arduino-1.8.9-linux64.tar.xz
               # If remote_src=no (default), local path to archive file to copy to the target server; can be absolute or relative. If remote_src=yes, path on the target server to existing archive file to unpack.,If remote_src=yes and src contains ://, the remote machine will download the file from the url first. (version_added 2.0)
               dest: /opt/arduino
               # Remote absolute path where the archive should be unpacked
@@ -123,31 +122,30 @@
         - name: Installation prerequisites for Linux for mystorm
           become: yes
           apt:
-            name: "{{item}}"
+            name:
+              - build-essential
+              - clang
+              - bison
+              - flex
+              - libreadline-dev
+              - gawk
+              - tcl-dev
+              - libffi-dev
+              - git
+              - mercurial
+              - graphviz
+              - xdot
+              - pkg-config
+              - python
+              - python3
+              - libftdi-dev
+              - vim
+              - htop
+              - screen
+              - iverilog
+              - wine-stable
+              - python-pexpect
             cache_valid_time: 3600
-          with_items:
-            - build-essential
-            - clang
-            - bison
-            - flex
-            - libreadline-dev
-            - gawk
-            - tcl-dev
-            - libffi-dev
-            - git
-            - mercurial
-            - graphviz
-            - xdot
-            - pkg-config
-            - python
-            - python3
-            - libftdi-dev
-            - vim
-            - htop
-            - screen
-            - iverilog
-            - wine-stable
-            - python-pexpect
         - name: Create hidden bin
           file:
             path: "{{ansible_user_dir}}/.bin/icestudio"
