@@ -18,6 +18,11 @@
   "provisioners": [
     {
       "type": "shell",
+      "environment_vars": [
+        "BASE={{user `box_name`}}",
+        "CONTROLS={{user `controls`}}",
+        "MYIPADDRESS={{user `myipaddress`}}"
+      ],
       "execute_command": "echo 'vagrant' | {{.Vars}} sudo -S -E bash '{{.Path}}'",
       "script": "scripts/ansible.sh",
       "expect_disconnect": true
@@ -63,7 +68,8 @@
       {
         "environment_vars": [
           "BASE={{user `box_name`}}",
-          "CONTROLS={{user `controls`}}"
+          "CONTROLS={{user `controls`}}",
+          "MYIPADDRESS={{user `myipaddress`}}"
         ],
         "inline_shebang": "/bin/bash -e",
         "inline": [
@@ -114,6 +120,7 @@
     "playbook": "ansible/main-ubuntu_1804_de.yml",
     "cpus": "2",
     "memory": "2048",
-    "vram": "16"
+    "vram": "16",
+    "myipaddress": "192.168.56.216"
   }
 }

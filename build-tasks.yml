@@ -90,6 +90,7 @@
       -var "requirements={{requirements}}"
       -var "playbook={{playbook}}"
       -var "controls={{CONTROLS}}"
+      -var "myipaddress={{ansible_default_ipv4.address}}"
       packer-ubuntu_1804_de-no-cloud.json
     args:
       executable: /bin/bash
