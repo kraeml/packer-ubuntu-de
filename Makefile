@@ -1,30 +1,58 @@
-builds/virtualbox-ubuntu1804.box: virtualbox-ovf/box.ovf
-	#source ../ENV_VARS
-	packer build -force packer-ubuntu-de.json
-	vagrant box remove --force file://builds/virtualbox-ubuntu1804.box || true
+export VAGRANT_VAGRANTFILE = builds-config/Vagrantfile-$(BASE)
 
-virtualbox-ovf/box.ovf:
-	ansible-playbook check_box.yml
+ifndef BASE
+BASE = ubuntu_1804_de
+endif
 
-clean_all: rm_box
-	rm virtualbox-ovf/*
+ifndef NO_CLOUD
+FILE_NAME = packer-ubuntu_1804_de
+else
+FILE_NAME = packer-ubuntu_1804_de-no-cloud
+endif
 
-rm_box:
-	rm builds/virtualbox-ubuntu1804.box || true
+ifndef CONTROLS
+CONTROLS = de
+endif
 
-test:
+no-cloud:
+	cat packer-ubuntu_1804_de.json | jq 'del(."post-processors"[1])' > packer-ubuntu_1804_de-no-cloud.json
+
+test_inspec:
 	vagrant up
-	inspec exec -t ssh://vagrant@$$(vagrant ssh-config | grep HostName | cut -d 'e' -f 2 | cut -d ' ' -f 2):$$(vagrant ssh-config | grep Port | cut -d 't' -f 2 | cut -d ' ' -f 2) -i $$(vagrant ssh-config | grep IdentityFile | cut -d ' ' -f 4) --password vagrant inspec_test/locale_de/
+	echo $(CONTROLS)
+	LC_MESSAGES=C inspec exec \
+		--controls=$(CONTROLS) \
+		-t ssh://vagrant@$$(vagrant ssh-config \
+			| grep HostName \
+			| cut -d 'e' -f 2 \
+			| cut -d ' ' -f 2):$$(vagrant ssh-config \
+			| grep Port \
+			| cut -d 't' -f 2 \
+			| cut -d ' ' -f 2) \
+		-i $$(vagrant ssh-config \
+			| grep IdentityFile \
+			| cut -d ' ' -f 4) \
+		--password vagrant inspec_test/locale_de/
 
 test_devsec:
 	vagrant up
-	inspec exec -t ssh://vagrant@$$(vagrant ssh-config | grep HostName | cut -d 'e' -f 2 | cut -d ' ' -f 2):$$(vagrant ssh-config | grep Port | cut -d 't' -f 2 | cut -d ' ' -f 2) -i $$(vagrant ssh-config | grep IdentityFile | cut -d ' ' -f 4) --password vagrant https://github.com/dev-sec/linux-baseline
+	LC_MESSAGES=C inspec exec \
+		-t ssh://vagrant@$$(vagrant ssh-config \
+			| grep HostName \
+			| cut -d 'e' -f 2 \
+			| cut -d ' ' -f 2)\
+			:$$(vagrant ssh-config \
+			| grep Port \
+			| cut -d 't' -f 2 \
+			| cut -d ' ' -f 2) \
+		-i $$(vagrant ssh-config \
+			| grep IdentityFile \
+			| cut -d ' ' -f 4) \
+		--password vagrant https://github.com/dev-sec/linux-baseline
 
-test_newBox: vagrant_box_clean test
+test: vagrant_box_clean test_inspec
+	vagrant destroy --force 2>/dev/null || true
 
 vagrant_box_clean:
-	vagrant destroy --force || true
-	vagrant box remove --force file://builds/virtualbox-ubuntu1804.box || true
-
-
-all: rm_box builds/virtualbox-ubuntu1804.box vagrant_box_clean
+	vagrant destroy --force 2>/dev/null || true
+	vagrant box remove --force file://builds/$(BASE)/virtualbox-$(BASE).box 2>/dev/null || true

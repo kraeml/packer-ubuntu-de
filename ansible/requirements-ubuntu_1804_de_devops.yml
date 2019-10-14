@@ -1,0 +1,4 @@
+---
+- src: geerlingguy.ruby
+- src: reallyenglish.packer-binary
+- src: viniciusfs.vagrant

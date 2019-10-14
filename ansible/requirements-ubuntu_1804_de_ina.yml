@@ -1,0 +1,11 @@
+---
+- src: geerlingguy.mysql
+- src: geerlingguy.nginx
+- src: geerlingguy.php
+#- src: geerlingguy.php-versions
+# Workaround galaxy errors
+- src: https://github.com/geerlingguy/ansible-role-php-versions/archive/2.1.3.tar.gz
+  name: geerlingguy.php-versions
+- src: geerlingguy.php-mysql
+- src: geerlingguy.nodejs
+#- src: fubarhouse.nodejs

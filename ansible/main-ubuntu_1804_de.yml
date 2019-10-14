@@ -1,0 +1,96 @@
+---
+- hosts: all
+  #become: yes
+  gather_facts: yes
+  roles:
+    - role: geerlingguy.nfs
+      become: yes
+    - role: geerlingguy.packer-debian
+      become: yes
+    - role: oefenweb.locales
+      become: yes
+      locales_present:
+        - en_US.UTF-8
+        - de_DE.UTF-8
+      locales_language_packs_present:
+        - language-pack-en
+        - language-pack-en-base
+        - language-pack-de
+        - language-pack-de-base
+      locales_default:
+        lang: de_DE.UTF-8
+        # language: de_DE.UTF-8
+      tags:
+        - locale_de
+    - role: oefenweb.timezone
+      become: yes
+      timezone_zone: "Europe/Berlin"
+      tags:
+        - locale_de
+    - role: gantsign.keyboard
+      become: yes
+      keyboard_model: pc105
+      keyboard_layout: de
+      tags:
+        - locale_de
+
+  tasks:
+    - name: "Install german packages"
+      become: yes
+      apt:
+        name:
+          - manpages-de
+    - block:
+      - name: "Create tuxcademy user(s)"
+        become: yes
+        user:
+          name: "{{item.name}}"
+          shell: /bin/bash
+          comment: "Tuxcademy user"
+          uid: "{{item.uid}}"
+        with_items:
+          - name: hugo
+            uid: 5000
+          - name: susi
+            uid: 5001
+      - name: "Create tuxcademy folders"
+        become: yes
+        file:
+          path: "/home/hugo/{{item.path}}"
+          state: directory
+          owner: "{{item.owner}}"
+          group: "{{item.owner}}"
+        with_items:
+          - path: briefe
+            owner: hugo
+          - path: romane
+            owner: hugo
+          - path: briefe
+            owner: susi
+          - path: romane
+            owner: susi
+          - path: prog
+            owner: hugo
+
+      - name: "Create tuxcademy files"
+        become: yes
+        file:
+          path: "/home/{{item.owner}}/{{item.path}}"
+          state: touch
+          owner: "{{item.owner}}"
+          group: "{{item.owner}}"
+        with_items:
+          - path: romane/werther.txt
+            owner: hugo
+          - path: briefe/brief.tab
+            owner: hugo
+          - path: briefe/omabrief
+            owner: hugo
+
+      - name: "Create tuxcademy special files"
+        become: yes
+        file:
+          path: /home/hugo/datei.txt
+          state: touch
+          owner: "{{ansible_user_id}}"
+          group: "{{ansible_user_gid}}"

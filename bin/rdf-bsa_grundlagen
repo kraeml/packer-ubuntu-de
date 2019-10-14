@@ -1,0 +1,9 @@
+#!/bin/bash
+if [ "${DEBUG:=false}" = "true" ]; then
+  set -o xtrace
+fi
+
+VAGRANT_EDU_PATH=/home/michl/Dokumente/OwnCloudKNF/Schule/1_Semester/BSA_1 rdf-edu de_jupyter $1
+if [[ $1 == "up" ]] || [[ $1 == "neu" ]] || [[ $1 == "reload" ]]; then
+  firefox 192.168.33.11:8888 2>/dev/null &
+fi

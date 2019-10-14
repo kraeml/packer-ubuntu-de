@@ -1,0 +1,54 @@
+---
+- hosts: all
+  #become: yes
+  gather_facts: yes
+  roles:
+    - role: geerlingguy.ruby
+      become: yes
+      ruby_install_gems_user: vagrant
+      ruby_install_gems:
+        - inspec
+        - serverspec
+        #- capybara
+        #- selenium-webdriver
+        - cucumber
+        - rspec
+        - sinatra
+        #- poltergeist
+        - rspec-expectations
+        - launchy
+        - rest-client
+        - test-kitchen
+        - kitchen-ansible
+        - kitchen-salt
+        - kitchen-vagrant
+        - kitchen-docker
+        - kitchen-sync
+        - kitchen-verifier-serverspec
+        #- kitchen-lxc
+        - kitchen-inspec
+        #- fog
+        #- foodcritic
+        #- thor-foodcritic
+      tags:
+        - ruby
+    - role: reallyenglish.packer-binary
+      become: yes
+      # ToDo This dosn't work install version 1.2.4
+      packer_binary_version: 1.2.5
+      packer_binary_sha256sum:
+        packer_1.2.5_linux_amd64.zip: bc58aa3f3db380b76776e35f69662b49f3cf15cf80420fc81a15ce971430824c
+        packer_1.1.3_linux_amd64.zip: b7982986992190ae50ab2feb310cb003a2ec9c5dcba19aa8b1ebb0d120e8686f
+      tags:
+        - packer
+    - role: viniciusfs.vagrant
+      become: yes
+      vagrant_version: 2.1.4
+      tags:
+        - vagrant
+  tasks:
+    - name: Ensure devops is marked
+      become: yes
+      file:
+        path: /etc/kraeml_devops
+        state: touch

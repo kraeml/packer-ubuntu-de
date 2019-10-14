@@ -1,0 +1,126 @@
+{
+  "builders": [
+		{
+			"type": "virtualbox-ovf",
+			"source_path": "virtualbox-ovf/pre_{{user `box_name`}}/box.ovf",
+			"ssh_username": "vagrant",
+			"ssh_password": "vagrant",
+      "headless": true,
+			"shutdown_command": "echo 'vagrant' | sudo -S shutdown -P now",
+      "guest_additions_path": "VBoxGuestAdditions_{{.Version}}.iso",
+      "vboxmanage": [
+        ["modifyvm", "{{.Name}}", "--memory", "4096"],
+        ["modifyvm", "{{.Name}}", "--cpus", "4"],
+        ["modifyvm", "{{.Name}}", "--vram", "32"]
+      ]
+    }
+  ],
+  "provisioners": [
+    {
+      "type": "shell",
+      "environment_vars": [
+        "BASE={{user `box_name`}}",
+        "CONTROLS={{user `controls`}}",
+        "MYIPADDRESS={{user `myipaddress`}}"
+      ],
+      "execute_command": "echo 'vagrant' | {{.Vars}} sudo -S -E bash '{{.Path}}'",
+      "script": "scripts/ansible.sh",
+      "expect_disconnect": true
+    },
+    {
+      "type": "shell",
+      "inline": ["sleep 30; echo Hello again"],
+      "expect_disconnect": true
+    },
+    {
+      "type": "ansible-local",
+      "playbook_file": "{{user `playbook`}}",
+      "galaxy_file": "{{user `requirements`}}",
+      "extra_arguments": [
+          "--skip-tags={{ user `ansible_skip_tags` }}",
+          "--user=vagrant"
+      ]
+    },
+    {
+      "type": "shell",
+      "execute_command": "echo 'vagrant' | {{.Vars}} sudo -S -E bash '{{.Path}}'",
+      "script": "scripts/cleanup.sh"
+    },
+    {
+      "environment_vars": [
+        "VERSION={{user `version`}}"
+      ],
+      "inline_shebang": "/bin/bash -e",
+      "inline": [
+        "echo $VERSION > builds-config/version"
+      ],
+      "type": "shell-local"
+    }
+  ],
+  "post-processors": [
+    [
+      {
+        "output": "builds/{{user `box_name`}}/{{.Provider}}-{{user `box_name`}}.box",
+        "type": "vagrant",
+        "include": ["builds-config/version"],
+        "keep_input_artifact": true
+      },
+      {
+        "environment_vars": [
+          "BASE={{user `box_name`}}",
+          "CONTROLS={{user `controls`}}",
+          "MYIPADDRESS={{user `myipaddress`}}"
+        ],
+        "inline_shebang": "/bin/bash -e",
+        "inline": [
+          "sync",
+          "make test"
+        ],
+        "type": "shell-local"
+      },
+      {
+        "environment_vars": [
+          "VERSION={{user `version`}}"
+        ],
+        "inline_shebang": "/bin/bash -e",
+        "inline": [
+          "echo $VERSION > builds-config/version-{{ user `box_name` }}",
+          "echo $VERSION > builds/{{user `box_name`}}/version"
+        ],
+        "type": "shell-local"
+      }
+    ],
+    [
+      {
+        "output": "builds/{{user `box_name`}}/{{.Provider}}-{{user `box_name`}}.box",
+        "type": "vagrant",
+        "include": ["builds-config/version-{{user `box_name`}}"],
+        "keep_input_artifact": true
+      },
+      {
+        "type": "vagrant-s3",
+        "credentials": "/home/michl/.aws/credentials",
+        "profile": "packer-s3",
+        "region": "eu-central-1",
+        "bucket": "{{ user `my-bucket`}}",
+        "manifest": "vagrant/json/{{ user `box_organization` }}/{{ user `box_name` }}.json",
+        "box_dir":  "vagrant/boxes/{{ user `box_organization` }}/{{ user `box_name` }}",
+        "box_name": "{{ user `box_organization` }}/{{ user `box_name` }}",
+        "version":  "{{ user `version` }}"
+      }
+    ]
+  ],
+  "variables": {
+    "cloud_token": "{{ env `ATLAS_TOKEN` }}",
+    "version": "{{isotime \"06.01.02-15-04\"}}",
+    "ansible_skip_tags": "ansible,not_packer,todo",
+    "my-bucket": "kraeml-vagrant-boxen",
+    "box_organization": "kraeml",
+    "requirements": "ansible/requirements-ubuntu_1804_de.yml",
+    "playbook": "ansible/main-ubuntu_1804_de.yml",
+    "cpus": "2",
+    "memory": "2048",
+    "vram": "16",
+    "myipaddress": "192.168.56.216"
+  }
+}

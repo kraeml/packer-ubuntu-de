@@ -1,42 +1,54 @@
 # encoding: utf-8
 # copyright: 2017, The Authors
 
-title 'OS Section'
+# TODO:
+# - Test git environment
+# - Test login shell
+# - Test screen config
+
+
+title 'Base Section'
 
 packages = [
-  "language-pack-en",
-  "language-pack-en-base",
-  "language-pack-de",
-  "language-pack-de-base",
-  "manpages-de"
+  "git",
+  "git-flow",
+  "build-essential",
+  "automake",
+  "wget",
+  "curl",
+  "vim",
+  "zsh",
+  "fonts-powerline",
+  "nano",
+  "screen",
+  "htop",
+  "tree",
+  "rsync",
+  "sqlite",
+  "python3",
+  "python",
+  "python3-pip",
+  "python-pip",
+  "python3-virtualenv",
+  "python-virtualenv",
+  "python3-dev",
+  "python-dev",
+  "sshpass",
+  "avahi-daemon",
+  "avahi-utils",
+  "nmap",
+  "whois",
+  "ipcalc",
+  "dnsutils"
 ]
 
-# you add controls here
-control 'base-1.0' do
-  impact 0.7
-  title 'OS Family debian/ubuntu'
-  describe os.family do
-    it { should eq 'debian' }
-  end
-  describe os.name do
-    it { should eq 'ubuntu' }
-  end
-  describe os.release do
-     it { should eq '18.04' }
-  end
-  describe os.arch do
-     it { should eq 'x86_64' }
-  end
+control 'base' do
+  impact 1.0
+  title 'Base setup'
+  desc "An optional description..."
   packages.each do |package|
     describe package(package) do
       it { should be_installed }
     end
   end
-  describe file('/etc/localtime') do
-    its('link_path') { should eq '/usr/share/zoneinfo/Europe/Berlin' }
-  end
-  describe command('cat /etc/timezone') do
-    its('stdout') {should match 'Europe/Berlin'}
-  end
-
 end

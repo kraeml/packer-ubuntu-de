@@ -1,0 +1,105 @@
+- name: "build-task: build_item debug"
+  debug:
+    var: build_item
+    verbosity: 1
+
+- name: Install dependencies
+  become: yes
+  apt:
+    name:
+      - jq
+  tags:
+    - dependencies
+
+#ToDo: Start devpi-server with devpi-server --start --host 0.0.0.0
+#when not running:
+# devpi-server --satatus 2>/dev/null shows server is running with pid xxxx
+
+
+- block:
+  - name: "build-task:Set variables"
+    set_fact:
+      BASE: "ubuntu_1804_{{build_item.name}}"
+      CONTROLS: "{{build_item.name | regex_replace('_', ' ')}}"
+      box_developer: "{{build_item.dependencies.box_developer}}"
+      box_organization: "{{build_item.box_organization | default ('kraeml')}}"
+      box_lts: "{{build_item.dependencies.box_lts}}"
+      requirements: "ansible/{{build_item.dependencies.requirements}}"
+      playbook: "ansible/{{build_item.dependencies.playbook}}"
+      # Used later in box_ovf_path
+      box_ovf_default: "{{ovf_path}}file:-VAGRANTSLASH--VAGRANTSLASH-builds-VAGRANTSLASH-{{build_item.dependencies.box_lts}}-VAGRANTSLASH-virtualbox-{{build_item.dependencies.box_lts}}.box/0/virtualbox/"
+
+  - name: "build-tasks:Set facts after variable"
+    set_fact:
+      box_version: "{{build_item.dependencies.box_version | default (lookup('file', 'builds-config/version-{{box_lts}}'))}}"
+      box_name: "{{box_organization}}/{{BASE}}"
+      box_ovf_path: "{{build_item.dependencies.box_ovf_path | default (box_ovf_default)}}"
+  tags:
+    - test_var
+    - vagrantfile
+
+- name: "build-task: Start build info"
+  debug:
+    msg: Build Box {{BASE}} depends on {{box_developer}}/{{box_lts}} in version {{box_version}}
+    verbosity: 1
+
+- name: "build-tasks: Debug info for CONTROLS"
+  debug:
+    var: CONTROLS
+  tags:
+    - test_var
+
+- include_tasks: check_box_tasks.yml
+
+- name: "build-task: ToDo skript is often here. Could be better"
+  make:
+    chdir: ./
+    target: no-cloud
+
+- name: "build-task: Ensure builds directory vor {{BASE}} exists"
+  file:
+    path: "builds/{{BASE}}"
+    state: directory
+  tags:
+    - vagrantfile
+
+- name: "build-task: Create builds Vagrantfile-{{BASE}}"
+  vars:
+    BUILD_PATH: "{{foo.vagrant_path}}"
+  template:
+    dest: "{{foo.dest}}"
+    src: templates/Vagrantfile-ubuntu_1804_de.j2
+  # ToDo loop_control set for outer_loop
+  loop_control:
+    loop_var: foo
+  with_items:
+    - vagrant_path: "/builds/{{BASE}}"
+      dest: "builds-config/Vagrantfile-{{BASE}}"
+    - vagrant_path: ""
+      dest: "builds/{{BASE}}/Vagrantfile"
+  tags:
+    - vagrantfile
+
+- block:
+  - name: "build-task: build {{BASE}}"
+    # Use BASE NOT box_name! The name box_name is double.
+    shell: >
+      packer build -force
+      -var "box_name={{BASE}}"
+      -var "box_organization={{box_organization}}"
+      -var "requirements={{requirements}}"
+      -var "playbook={{playbook}}"
+      -var "controls={{CONTROLS}}"
+      -var "myipaddress={{ansible_default_ipv4.address}}"
+      packer-ubuntu_1804_de-no-cloud.json
+    args:
+      executable: /bin/bash
+      chdir: ./
+    environment:
+      PACKER_LOG: 1
+      PACKER_LOG_PATH: ./log/packer.log
+  rescue:
+  - name: Error debug info
+    debug:
+      msg: Build Box {{BASE}} error depends on {{box_developer}}/{{box_lts}} in version {{box_version}}
+  - command: /bin/false

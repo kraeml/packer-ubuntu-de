@@ -1,0 +1,128 @@
+---
+- hosts: all
+  #become: yes
+  gather_facts: yes
+  roles:
+    # ToDo: Replace with other role for git
+    #- role: franklinkim.git
+    #  become: yes
+    #  git_config:
+    #    core:
+    #      autocrlf: input
+    #    alias:
+    #      ls: 'log --pretty=format:"%C(yellow)%h%Cred%d\\ %Creset%s%Cblue\\ [%cn]" --decorate'
+    #      ll: 'log --pretty=format:"%C(yellow)%h%Cred%d\\ %Creset%s%Cblue\\ [%cn]" --decorate --numstat'
+    #      lds: 'log --pretty=format:"%C(yellow)%h\\ %ad%Cred%d\\ %Creset%s%Cblue\\ [%cn]" --decorate --date=short'
+    #      lt: 'log --oneline --graph --decorate --all'
+    #      cane: 'git commit --amend --no-edit'
+    #      rom: 'rebase origin/master'
+    #  tags:
+    #    - git
+    #- role: gantsign.oh-my-zsh
+    #  users:
+    #    - username: "{{ ansible_user_id }}"
+    #      oh_my_zsh:
+    #        theme: robbyrussell
+    #      plugins:
+    #        - git
+    #        - python
+    #        - pip
+    #        - command-not-found
+    #        - docker
+    #        - dotenv
+    #        - git-flow
+    #        - systemd
+    #        - ubuntu
+    #        - vagrant
+    #        - virtualenv
+
+  tasks:
+    # ToDo Setup new entries in inspec via yaml
+    - name: "Install needed packages"
+      become: yes
+      apt:
+        name:
+          - git
+          - git-flow
+          - build-essential
+          - automake
+          - wget
+          - curl
+          - vim
+          - zsh
+          - fonts-powerline
+          - nano
+          - screen
+          - htop
+          - tree
+          - rsync
+          - sqlite
+          #- lvm2
+          - python3
+          - python
+          - python3-pip
+          - python-pip
+          - python3-virtualenv
+          - python-virtualenv
+          - python3-dev
+          - python-dev
+          #- python3-pexpect
+          #- python-pexpect
+          #- python3-winrm
+          #- python-winrm
+          #- libffi-dev
+          #- libssl-dev
+          #- cowsay
+          - sshpass
+          - avahi-daemon
+          - avahi-utils
+          - nmap
+          - whois
+          #- proftpd-basic
+          - ipcalc
+          - dnsutils
+          - shellcheck
+          - bats
+        state: present
+        update_cache: yes
+        cache_valid_time: 3600
+
+    - name: Git config
+      git_config:
+        name: "{{item.name}}"
+        value: "{{item.value}}"
+        scope: global
+      with_items:
+        - name: "user.email"
+          value: "vagrant@example.com"
+        - name: "user.name"
+          value: "vagrant"
+        - name: "core.editor"
+          value: "vim"
+        - name: "push.default"
+          value: "simple"
+      tags:
+        - git
+
+    - name: Set login shell for {{ ansible_user_id }}
+      become: yes
+      user:
+        name: '{{ ansible_user_id }}'
+        shell: '/bin/bash'
+
+    - name: Configure screen
+      become: yes
+      lineinfile:
+        path: /etc/screenrc
+        regexp: '^caption always'
+        line: 'caption always "%{rw} * | %H * $LOGNAME | %{bw}%c %D | %{-}%-Lw%{rw}%50>%{rW}%n%f* %t %{-}%+Lw%<"'
+
+    #- name: configure bashrc with screen
+    #  blockinfile:
+    #    path: /home/vagrant/.bashrc
+    #    block: |
+    #       if [ "$TERM" != "screen" ] && [ "$SSH_CONNECTION" != "" ]; then
+    #         /usr/bin/screen -ls sshscreen || /usr/bin/screen -dmS sshscreen
+    #         echo "SSH no active"
+    #         /usr/bin/screen -S sshscreen -D -RR  && exit
+    #       fi

@@ -1,40 +1,47 @@
 ---
 - hosts: localhost
-  vars:
-    box_developer: "geerlingguy"
-    box_lts: "ubuntu1804"
-    box_name: "{{box_developer}}/{{box_lts}}"
-    box_version: "1.0.1"
-    box_ovf_path: "{{ansible_user_dir}}/.vagrant.d/boxes/{{box_developer}}-VAGRANTSLASH-{{box_lts}}/{{box_version}}/virtualbox/"
-
   tasks:
-    - name: "Check box {{box_name}} is in version {{box_version}}"
-      command: "vagrant box add --box-version {{box_version}} {{box_name}}"
-      register: box_info
-      ignore_errors: yes
-      changed_when: False
+    - debug:
+        var: "{{item}}"
+        verbosity: 1
+      with_items:
+        - box_name
+        - BASE
 
-    - name: "Display box info"
-      debug:
-        var: box_info
-        verbosity: 2
-
-    - name: "Display box path"
-      debug:
-        var: box_ovf_path
-        verbosity: 2
-
-    - name: "Test box exists"
-      command: "ls -ld {{box_ovf_path}}"
+    - include_vars: # This module allows you to specify the 'file' option directly without any other options. There is no 'free-form' option, this is just an indicator, see example below.
       args:
-        creates: "{{box_ovf_path}}"
+        file: "{{BASE}}.yml"
+      when: box_name is undefined
 
-    - name: Ensure virtualbox-ovf directory exists
-      file:
-        path: ./virtualbox-ovf
-        state: directory
+    - include_tasks: check_box_tasks.yml
 
-    - name: "Copy virtualbox files"
-      copy:
-        dest: ./virtualbox-ovf
-        src: "{{box_ovf_path}}"
+    #- name: "Check box {{box_name}} is in version {{box_version}}"
+    #  command: "vagrant box add --box-version {{box_version}} {{box_name}}"
+    #  register: box_info
+    #  ignore_errors: yes
+    #  changed_when: False
+
+    #- name: "Display box info"
+    #  debug:
+    #    var: box_info
+    #    verbosity: 2
+#
+#    - name: "Display box path"
+#      debug:
+#        var: box_ovf_path
+#        verbosity: 2
+#
+#    - name: "Test box exists"
+#      command: "ls -ld {{box_ovf_path}}"
+#      args:
+#        creates: "{{box_ovf_path}}"
+#
+#    - name: Ensure virtualbox-ovf directory exists
+#      file:
+#        path: "./virtualbox-ovf/{{BASE}}"
+#        state: directory
+#
+#    - name: "Copy virtualbox files"
+#      copy:
+#        dest: "./virtualbox-ovf/{{BASE}}"
+#        src: "{{box_ovf_path}}"

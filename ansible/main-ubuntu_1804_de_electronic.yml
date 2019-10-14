@@ -1,0 +1,330 @@
+---
+  - hosts: all
+    tasks:
+    - name: Electronic and Digital
+      block:
+        - name: Install Electronic packages
+          become: yes
+          apt:
+            name:
+              - logisim
+              - gtkwave
+              - gnat
+              - kicad
+              - pcb
+              - geda
+              - geda-utils
+              - geda-examples
+              - gerbv
+              - avr-libc
+              - avrdude
+              - binutils-avr
+              - gcc-avr
+              - libftdi1
+              - libjna-java
+              - libjna-jni
+              - librxtx-java
+              - libqt5printsupport5
+              - libqt5serialport5
+              - libqt5sql5
+              - libqt5sql5-sqlite
+              - libqt5xml5
+              - xclip
+              - fritzing
+            state: present
+            update_cache: yes
+            cache_valid_time: 3600
+        #- name: Lookup for ghdl
+        #  stat:
+        #    path: /usr/local/bin/ghdl
+        #  register: ghdl
+        #- name: Output ghdl var
+        #  debug:
+        #    var: ghdl
+        #    verbosity: 1
+        #- name: Clone ghdl
+        #  git:
+        #      dest: /tmp/ghdl
+        #      repo: https://github.com/ghdl/ghdl.git
+        #  register: ghdl_clone
+        #  when: ghdl.stat.exists == False
+
+        #- name: Create build in ghdl
+        #  file:
+        #      path: /tmp/ghdl/build
+        #      state: directory
+        #  when: ghdl_clone.changed
+
+        #- name: Configure ghdl
+        #  command: ../configure --prefix=/opt/ghdl
+        #  args:
+        #      chdir: /tmp/ghdl/build
+        #  when: ghdl_clone.changed
+        #- name: Make ghdl
+        #  become: yes
+        #  command: '/bin/bash -l -c /usr/bin/make'
+        #  args:
+        #      chdir: /tmp/ghdl/build
+        #  when: ghdl_clone.changed
+        #- name: Make install ghdl
+        #  become: yes
+        #  command: make install
+        #  args:
+        #      chdir: /tmp/ghdl/build
+        #  when: ghdl_clone.changed
+        #- name: Link to ghdl
+        #  become: yes
+        #  file:
+        #    src: /opt/ghdl/bin/ghdl
+        #    dest: /usr/local/bin/ghdl
+        #    state: link
+        - name: Create electronic dirs
+          become: yes
+          file:
+              path: "/opt/{{item}}"
+              state: directory
+          with_items:
+            - arduino
+
+        #- name: Get Fritzing
+        #  become: yes
+        #  unarchive:
+        #      src: http://fritzing.org/media/downloads/fritzing-0.9.3b.linux.AMD64.tar.bz2
+        #      # If remote_src=no (default), local path to archive file to copy to the target server; can be absolute or relative. If remote_src=yes, path on the target server to existing archive file to unpack.,If remote_src=yes and src contains ://, the remote machine will download the file from the url first. (version_added 2.0)
+        #      dest: /opt/fritzing
+        #      # Remote absolute path where the archive should be unpacked
+        #      group: # name of the group that should own the file/directory, as would be fed to I(chown)
+        #      remote_src: yes
+        #      # Set to C(yes) to indicate the archived file is already on the remote system and not local to the Ansible controller.,This option is mutually exclusive with C(copy).
+        #      extra_opts:
+        #        - "--strip-components=1"
+        #      # Specify additional options by passing in an array.
+        #      creates: /opt/fritzing/Fritzing
+        #- name: Create applications directory
+        #  file:
+        #    path: "{{ansible_user_dir}}/.local/share/applications/"
+        #    state: directory
+        #- name: Install Fritzing desktop
+        #  template:
+        #    dest: "{{ansible_user_dir}}/.local/share/applications/fritzing.desktop"
+        #    src: fritzing.desktop
+        - name: Get Digital
+          become: yes
+          unarchive:
+              src: https://github.com/hneemann/Digital/releases/download/v0.23/Digital.zip
+              # If remote_src=no (default), local path to archive file to copy to the target server; can be absolute or relative. If remote_src=yes, path on the target server to existing archive file to unpack.,If remote_src=yes and src contains ://, the remote machine will download the file from the url first. (version_added 2.0)
+              dest: /opt/
+              # Remote absolute path where the archive should be unpacked
+              group: # name of the group that should own the file/directory, as would be fed to I(chown)
+              remote_src: yes
+              # Set to C(yes) to indicate the archived file is already on the remote system and not local to the Ansible controller.,This option is mutually exclusive with C(copy).
+              #extra_opts:
+              #  - "--strip-components=1"
+              # Specify additional options by passing in an array.
+              creates: /opt/Digital/Digital.sh
+        - name: Get Digital icon
+          become: yes
+          get_url:
+            url: https://raw.githubusercontent.com/hneemann/Digital/master/src/main/svg/icon.svg
+            dest: /opt/Digital/icon.svg
+        - name: Workaround realpath
+          become: yes
+          replace:
+            path: /opt/Digital/Digital.sh
+            replace: 'DIR="$( cd "$( dirname "$( realpath "${BASH_SOURCE[0]}" )" )" >/dev/null && pwd )"'
+            regexp: "^DIR=.*$"
+        - name: Create link to Digital.sh
+          become: yes
+          file:
+            dest: /usr/local/bin/Digital
+            src: /opt/Digital/Digital.sh
+            state: link
+        - name: Create Digital Desktop file
+          blockinfile:
+            path: ~/.local/share/applications/Digital.desktop
+            create: yes
+            block: |
+              [Desktop Entry]
+              Name=Digital
+              Comment=Digital is a easy-to-use digital logic designer and circuit simulator designed for educational purposes.
+              Type=Application
+              Categories=Development;Education;Graphics;
+              StartupNotify=true
+              #MimeType=application/x-Digital-project;
+
+              Exec=/usr/local/bin/Digital %f
+              Icon=/opt/Digital/icon.svg
+
+        - name: Get arduino IDE
+          become: yes
+          unarchive:
+              src: https://downloads.arduino.cc/arduino-1.8.10-linux64.tar.xz
+              # If remote_src=no (default), local path to archive file to copy to the target server; can be absolute or relative. If remote_src=yes, path on the target server to existing archive file to unpack.,If remote_src=yes and src contains ://, the remote machine will download the file from the url first. (version_added 2.0)
+              dest: /opt/arduino
+              # Remote absolute path where the archive should be unpacked
+              group: # name of the group that should own the file/directory, as would be fed to I(chown)
+              remote_src: yes
+              # Set to C(yes) to indicate the archived file is already on the remote system and not local to the Ansible controller.,This option is mutually exclusive with C(copy).
+              extra_opts:
+                - "--strip-components=1"
+              # Specify additional options by passing in an array.
+              creates: /opt/arduino/arduino
+          register: arduino
+        - name: Installation prerequisites for Linux for mystorm
+          become: yes
+          apt:
+            name:
+              - build-essential
+              - clang
+              - bison
+              - flex
+              - libreadline-dev
+              - gawk
+              - tcl-dev
+              - libffi-dev
+              - git
+              - mercurial
+              - graphviz
+              - xdot
+              - pkg-config
+              - python
+              - python3
+              - libftdi-dev
+              - vim
+              - htop
+              - screen
+              - iverilog
+              - wine-stable
+              - python-pexpect
+            cache_valid_time: 3600
+        - name: Create hidden bin
+          file:
+            path: "{{ansible_user_dir}}/.bin/icestudio"
+            state: directory
+        - name: Downloading of IceStorm for linux
+          git:
+            dest: "{{ansible_user_dir}}/.bin/{{item.dest}}"
+            repo: "{{item.repo}}"
+          with_items:
+            - repo: https://github.com/cliffordwolf/icestorm.git
+              dest: icestorm
+            - repo: https://github.com/cseed/arachne-pnr.git
+              dest: arachne-pnr
+            - repo: https://github.com/cliffordwolf/yosys.git
+              dest: yosys
+            - repo: https://github.com/myhdl/myhdl.git
+              dest: myhdl
+        - name: Install myhdl
+          become: yes
+          command: python3 setup.py install
+          args:
+            creates: "/usr/local/lib/python3.6/dist-packages/{{item}}*"
+            chdir: "{{ansible_user_dir}}/.bin/{{item}}"
+          with_items:
+            - myhdl
+        - name: Downloading mystorm tutorial
+          git:
+            dest: "{{ansible_user_dir}}/Dokumente/{{item.dest}}"
+            repo: "{{item.repo}}"
+          with_items:
+            - repo: https://github.com/mystorm-org/Guide.git
+              dest: mystorm-Guide
+            - repo: https://github.com/mystorm-org/BlackIce-II.git
+              dest: BlackIce-II
+        - name: Makeing of IceStorm for linux
+          make:
+            chdir: "{{ansible_user_dir}}/.bin/{{item}}"
+          with_items:
+            - icestorm
+          register: icestorm
+        - name: Instalation of IceStorm for linux
+          become: yes
+          make:
+            target: install
+            chdir: "{{ansible_user_dir}}/.bin/{{item}}"
+          when: icestorm.changed
+          with_items:
+            - icestorm
+        - name: Makeing II of IceStorm for linux
+          make:
+            chdir: "{{ansible_user_dir}}/.bin/{{item}}"
+          register: arachne
+          with_items:
+            - arachne-pnr
+        - name: Install II of IceStorm for linux
+          become: yes
+          make:
+            target: install
+            chdir: "{{ansible_user_dir}}/.bin/{{item}}"
+          when: arachne.changed
+          with_items:
+            - arachne-pnr
+        - name: Makeing III of IceStorm for linux
+          make:
+            target: all
+            chdir: "{{ansible_user_dir}}/.bin/{{item}}"
+          register: yosys
+          with_items:
+            - yosys
+        - name: Install III of IceStorm for linux
+          become: yes
+          make:
+            target: install
+            chdir: "{{ansible_user_dir}}/.bin/{{item}}"
+          when: yosys.changed
+          with_items:
+            - yosys
+        - name: Get icestudio IDE
+          unarchive:
+              src: https://github.com/FPGAwars/icestudio/releases/download/v0.3.3-rc/icestudio-0.3.3-rc-linux64.zip
+              # If remote_src=no (default), local path to archive file to copy to the target server; can be absolute or relative. If remote_src=yes, path on the target server to existing archive file to unpack.,If remote_src=yes and src contains ://, the remote machine will download the file from the url first. (version_added 2.0)
+              dest: "{{ansible_user_dir}}/.bin/icestudio"
+              # Remote absolute path where the archive should be unpacked
+              group: # name of the group that should own the file/directory, as would be fed to I(chown)
+              remote_src: yes
+              # Set to C(yes) to indicate the archived file is already on the remote system and not local to the Ansible controller.,This option is mutually exclusive with C(copy).
+              #extra_opts:
+              #  - "--strip-components=1"
+              # Specify additional options by passing in an array.
+              creates: "{{ansible_user_dir}}/.bin/icestudio/icestudio-0.3.3-rc-linux64"
+          register: icestudio
+        - name: Create electronic links
+          become: yes
+          file:
+              src: "/opt/{{item.src}}/{{item.bin}}"
+              dest: "/usr/bin/{{item.bin}}"
+              state: link
+          with_items:
+            - src: arduino
+              bin: arduino
+
+        - name: Install arduino on desktop
+          become: yes
+          command: /opt/arduino/install.sh
+          when: arduino.changed
+        - get_url:
+            dest: /tmp/linux_installer.sh
+            url: https://raw.githubusercontent.com/FPGAwars/icestudio/develop/scripts/linux_installer.sh
+            mode: 0760
+        - name: Install icestudio on desktop
+          expect:
+            command: /tmp/linux_installer.sh
+            responses:
+              Enter the Icestudio path: "{{ansible_user_dir}}/.bin/icestudio/icestudio-0.3.3-rc-linux64"
+            creates: "{{ansible_user_dir}}/.local/share/applications/icestudio.desktop"
+            timeout: 30
+        - name: Member of dialout
+          become: yes
+          user:
+              name: "{{ansible_user_id}}"
+              groups: dialout
+              # Puts the user in this comma-delimited list of groups. When set to the empty string ('groups='), the user is removed from all groups except the primary group.
+              append: yes
+              # If C(yes), will only add groups, not set them to just the list in I(groups).
+        - name: Right for user
+          become: yes
+          command: "chown -R {{ansible_user_id}}:{{ansible_user_gid}} {{ansible_user_dir}}/"
+      tags:
+        - ghdl
+        - electronic
+        - desktop

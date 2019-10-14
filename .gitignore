@@ -1,7 +1,17 @@
 *.retry
 builds/
+builds-config/
 output-virtualbox-ovf/
 virtualbox-ovf/
 .vagrant/
 bin/packer
 version
+*-no-cloud.json
+version-ubuntu_1804_de*
+packer.log
+tmp/
+log/
+ansible/test.yml
+downloads/
+venv/
+packer_cache/
