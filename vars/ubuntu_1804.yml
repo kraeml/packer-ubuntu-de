@@ -196,5 +196,5 @@
       dependencies:
         box_developer: "kraeml"
         box_lts: "ubuntu_1804_de_devops_xdesktop"
-        requirements: "requirements-ubuntu_1804_de_xdesktop.yml"
-        playbook: "main-ubuntu_1804_de_xdesktop.yml"
+        requirements: "requirements-ubuntu_1804_de_sa.yml"
+        playbook: "main-ubuntu_1804_de_sa.yml"

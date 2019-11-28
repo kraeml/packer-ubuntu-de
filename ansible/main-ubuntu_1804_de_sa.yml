@@ -1,0 +1,52 @@
+---
+- hosts: all
+  #become: yes
+
+  gather_facts: yes
+
+  roles:
+    - role: geerlingguy.ruby
+      become: yes
+      ruby_install_gems_user: vagrant
+      ruby_install_gems:
+        - inspec
+        - serverspec
+        #- capybara
+        #- selenium-webdriver
+        - cucumber
+        - rspec
+        - sinatra
+        #- poltergeist
+        - rspec-expectations
+        - launchy
+        - rest-client
+        - test-kitchen
+        - kitchen-ansible
+        - kitchen-salt
+        - kitchen-vagrant
+        - kitchen-docker
+        - kitchen-sync
+        - kitchen-verifier-serverspec
+        #- kitchen-lxc
+        - kitchen-inspec
+        #- fog
+        #- foodcritic
+        #- thor-foodcritic
+      tags:
+        - ruby
+    - role: ThorstenS-linux.packer-io
+      become: yes
+      packer_version: 1.4.5
+      tags:
+        - packer
+    - role: viniciusfs.vagrant
+      become: yes
+      vagrant_version: 2.2.6
+      tags:
+        - vagrant
+  tasks:
+    - name: Ensure devops is marked
+      become: yes
+      file:
+        path: /etc/kraeml_devops
+        state: touch
