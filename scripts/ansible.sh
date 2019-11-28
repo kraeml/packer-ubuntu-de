@@ -1,4 +1,15 @@
 #!/bin/bash -eux
+get_ansible() {
+	if ansible --version 2>/dev/null ; then
+		apt-get -y update
+	else
+		apt-get -y install software-properties-common
+		apt-add-repository ppa:ansible/ansible
+		# Install Ansible.
+		apt-get -y update
+		apt-get -y install ansible
+	fi
+}
 export DEBIAN_FRONTEND=noninteractive
 # Install Ansible repository.
 tee "/etc/apt/apt.conf.d/01proxy" <<EOF
@@ -10,16 +21,8 @@ EOF
 #index-url=http://192.168.56.216:3141/root/pypi/
 #trusted-host=192.168.56.216
 #EOF
-if ansible --version 2>/dev/null ; then
-	apt-get -y update
-else
-	apt-get -y install software-properties-common
-	apt-add-repository ppa:ansible/ansible
-	# Install Ansible.
-	apt-get -y update
-	apt-get -y install ansible
-fi
-# apt-get -y --force yes full-upgrade
+get_ansible
+apt-get -y full-upgrade
 DEBIAN_FRONTEND=noninteractive apt-get -y -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" dist-upgrade
 echo Going reboot
 reboot
