@@ -8,10 +8,16 @@ export VAGRANT_VAGRANTFILE="builds-config/Vagrantfile-ubuntu_1804_$1"
 BUILD_NAME="file://builds/ubuntu_1804_$1/virtualbox-ubuntu_1804_$1.box"
 
 cd ~/Dokumente/Schule/Bento-Boxen/packer-ubuntu-devops-academy/packer-ubuntu-de || exit
-if [[ "$2" == "neu" ]]; then
+if [ "$2" == "neu" ] || [ "$2" == "destroy"  ]; then
+  #ToDo Falls noch läuft vergessene Vagrants in .vagrant suchen.
   vagrant destroy --force
-  vagrant box remove "$BUILD_NAME" && vagrant box add "$BUILD_NAME" --name "$BUILD_NAME"
-  vagrant up
+  vagrant box remove "$BUILD_NAME"
+  if [ "$2" == "neu"  ]; then
+	  vagrant box add "$BUILD_NAME" --name "$BUILD_NAME"
+	  vagrant up
+	  vagrant ssh -c "source /vagrant/scripts/get_ansible.sh && get_ansible"
+	  vagrant ssh -c "ansible-galaxy role install --role-file /vagrant/ansible/requirements-ubuntu_1804_de_$(cut -d'_' -f2 <<<"$1").yml"
+  fi
 else
   vagrant "$2"
 fi
