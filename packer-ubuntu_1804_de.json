@@ -29,7 +29,12 @@
     },
     {
       "type": "shell",
-      "inline": ["sleep 30; echo Hello again"],
+      "inline": [
+        "sleep 10",
+        "echo Hello again",
+        "sudo sed -i 's/nameserver.*$/nameserver 9.9.9.9/g' /etc/resolv.conf"
+
+      ],
       "expect_disconnect": true
     },
     {
