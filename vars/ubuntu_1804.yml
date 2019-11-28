@@ -195,6 +195,6 @@
       name: "de_sa"
       dependencies:
         box_developer: "kraeml"
-        box_lts: "ubuntu_1804_de_devops_xdesktop"
+        box_lts: "{{ BOX_LTS | default('ubuntu_1804_de_devops_xdesktop') }}"
         requirements: "requirements-ubuntu_1804_de_sa.yml"
         playbook: "main-ubuntu_1804_de_sa.yml"

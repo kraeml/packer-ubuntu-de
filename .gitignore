@@ -15,3 +15,6 @@ ansible/test.yml
 downloads/
 venv/
 packer_cache/
+inspec_test/locale_de/controls/sa.rb
+ansible/requirements-ubuntu_1804_de_sa.yml
+ansible/main-ubuntu_1804_de_sa.yml

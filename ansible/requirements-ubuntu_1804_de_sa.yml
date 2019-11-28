@@ -1,7 +1,3 @@
 ---
-- src: https://github.com/gantsign/ansible-role-xdesktop/archive/4.0.0.tar.gz
-  name: gantsign.xdesktop
-- src: gantsign.lightdm
-- src: gantsign.atom
-- src: gantsign.atom-packages
-- src: gantsign.golang
+  # Do not remove this roles could not be empty.
+- src: ThorstenS-linux.packer-io
