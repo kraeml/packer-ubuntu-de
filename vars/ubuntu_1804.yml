@@ -24,9 +24,9 @@
     #- de_base_ina_xdesktop
     #- de_base_ina_jupyter_xdesktop
     - de_electronic
-    - de_jupyter_electronic
+    - de_electronic_jupyter
 
-  base_version: "1.1.1"
+  base_version: "1.1.2"
 
   ubuntu_1804:
     # DE for german language setup
@@ -126,7 +126,7 @@
         box_lts: "ubuntu_1804_de_base_xdesktop"
         requirements: "requirements-ubuntu_1804_de_electronic.yml"
         playbook: "main-ubuntu_1804_de_electronic.yml"
-    de_jupyter_electronic:
+    de_electronic_jupyter:
       name: "de_jupyter_electronic"
       dependencies:
         box_developer: "kraeml"
