@@ -1,32 +1,33 @@
 ---
   ovf_path: "{{ansible_user_dir}}/.vagrant.d/boxes/"
   BASE_NAME: "de"
+  base_version: "1.1.3"
   all:
     - de
-    - de_jupyter
-    - de_xdesktop
-    - de_jupyter_xdesktop
+    #- de_jupyter
+    #- de_xdesktop
+    #- de_jupyter_xdesktop
     - de_base
     - de_base_jupyter
-    - de_base_xdesktop
+    #- de_base_xdesktop
     - de_base_jupyter_xdesktop
-    - de_extended
-    - de_extended_jupyter
-    - de_extended_xdesktop
+    #- de_extended
+    #- de_extended_jupyter
+    #- de_extended_xdesktop
     - de_extended_jupyter_xdesktop
-    - de_devops
-    - de_devops_jupyter
-    - de_devops_xdesktop
+    #- de_devops
+    #- de_devops_jupyter
+    #- de_devops_xdesktop
     - de_devops_jupyter_xdesktop
-    - de_sa
     #- de_base_ina
     #- de_base_ina_jupyter
     #- de_base_ina_xdesktop
     #- de_base_ina_jupyter_xdesktop
-    - de_electronic
+    #- de_electronic
     - de_electronic_jupyter
+    - de_sa
 
-  base_version: "1.1.2"
+
 
   ubuntu_1804:
     # DE for german language setup
@@ -130,9 +131,9 @@
       name: "de_jupyter_electronic"
       dependencies:
         box_developer: "kraeml"
-        box_lts: "ubuntu_1804_de_electronic"
-        requirements: "requirements-ubuntu_1804_de_jupyter.yml"
-        playbook: "main-ubuntu_1804_de_jupyter.yml"
+        box_lts: "ubuntu_1804_de_devops_jupyter_xdesktop"
+        requirements: "requirements-ubuntu_1804_de_electronic.yml"
+        playbook: "main-ubuntu_1804_de_electronic.yml"
     # EXTENDED with lxc support
     de_extended:
       name: "de_extended"
@@ -145,23 +146,23 @@
       name: "de_extended_jupyter"
       dependencies:
         box_developer: "kraeml"
-        box_lts: "ubuntu_1804_de_extended"
-        requirements: "requirements-ubuntu_1804_de_jupyter.yml"
-        playbook: "main-ubuntu_1804_de_jupyter.yml"
+        box_lts: "ubuntu_1804_de_base_jupyter"
+        requirements: "requirements-ubuntu_1804_de_extended.yml"
+        playbook: "main-ubuntu_1804_de_extended.yml"
     de_extended_xdesktop:
       name: "de_extended_xdesktop"
       dependencies:
         box_developer: "kraeml"
-        box_lts: "ubuntu_1804_de_extended"
-        requirements: "requirements-ubuntu_1804_de_xdesktop.yml"
-        playbook: "main-ubuntu_1804_de_xdesktop.yml"
+        box_lts: "ubuntu_1804_de_base_xdesktop"
+        requirements: "requirements-ubuntu_1804_de_extended.yml"
+        playbook: "main-ubuntu_1804_de_extended.yml"
     de_extended_jupyter_xdesktop:
       name: "de_extended_jupyter_xdesktop"
       dependencies:
         box_developer: "kraeml"
-        box_lts: "ubuntu_1804_de_extended_jupyter"
-        requirements: "requirements-ubuntu_1804_de_xdesktop.yml"
-        playbook: "main-ubuntu_1804_de_xdesktop.yml"
+        box_lts: "ubuntu_1804_de_base_jupyter_xdesktop"
+        requirements: "requirements-ubuntu_1804_de_extended.yml"
+        playbook: "main-ubuntu_1804_de_extended.yml"
     # ToDo DEVOPS with eg. ansible setup
     de_devops:
       name: "de_devops"
@@ -174,23 +175,23 @@
       name: "de_devops_jupyter"
       dependencies:
         box_developer: "kraeml"
-        box_lts: "ubuntu_1804_de_devops"
-        requirements: "requirements-ubuntu_1804_de_jupyter.yml"
-        playbook: "main-ubuntu_1804_de_jupyter.yml"
+        box_lts: "ubuntu_1804_de_extended_jupyter"
+        requirements: "requirements-ubuntu_1804_de_devops.yml"
+        playbook: "main-ubuntu_1804_de_devops.yml"
     de_devops_xdesktop:
       name: "de_devops_xdesktop"
       dependencies:
         box_developer: "kraeml"
-        box_lts: "ubuntu_1804_de_devops"
-        requirements: "requirements-ubuntu_1804_de_xdesktop.yml"
-        playbook: "main-ubuntu_1804_de_xdesktop.yml"
+        box_lts: "ubuntu_1804_de_extended_xdesktop"
+        requirements: "requirements-ubuntu_1804_de_devops.yml"
+        playbook: "main-ubuntu_1804_de_devops.yml"
     de_devops_jupyter_xdesktop:
       name: "de_devops_jupyter_xdesktop"
       dependencies:
         box_developer: "kraeml"
-        box_lts: "ubuntu_1804_de_devops_jupyter"
-        requirements: "requirements-ubuntu_1804_de_xdesktop.yml"
-        playbook: "main-ubuntu_1804_de_xdesktop.yml"
+        box_lts: "ubuntu_1804_de_extended_jupyter_xdesktop"
+        requirements: "requirements-ubuntu_1804_de_devops.yml"
+        playbook: "main-ubuntu_1804_de_devops.yml"
     de_sa:
       name: "de_sa"
       dependencies:
