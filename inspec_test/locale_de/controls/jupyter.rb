@@ -33,7 +33,7 @@ tools = {
         :version => '4.4',
         :command => 'jupyter --version',
         :port => '8888',
-        :process => 'jupyter-noteboo' # This is right without k
+        :process => 'jupyter-lab' # This is right without k
     },
     :pip3_jupyter => {
         :version => '1.0',

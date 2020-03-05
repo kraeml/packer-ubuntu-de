@@ -8,13 +8,17 @@
 title 'DevOps Section'
 
 tools = {
-    :vagrant => {
-        :version => '2.1.4',
-        :command => 'vagrant --version'
-    },
+    #:vagrant => {
+    #    :version => '2.1.4',
+    #    :command => 'vagrant --version'
+    #},
     :packer => {
         :version => '1.2.5',
         :command => 'packer --version'
+    },
+    inspec => {
+      :version => '4.18.39',
+      :command => 'inspec --version'
     },
     :ansible => {
         :version => '2.8.3',
@@ -22,31 +26,15 @@ tools = {
     }
 }
 
-gem_packages = [
-  "inspec",
-  "serverspec",
-  #"selenium-webdriver",
-  "cucumber",
-  "rspec",
-  "sinatra",
-  "rspec-expectations",
-  "launchy",
-  "rest-client",
-  "test-kitchen",
-  "kitchen-ansible",
-  "kitchen-salt",
-  "kitchen-vagrant",
-  "kitchen-docker",
-  "kitchen-sync",
-  "kitchen-verifier-serverspec",
-  #"kitchen-lxc",
-  "kitchen-inspec"
+docker_images_ros = [
+  "melodic",
+  "dashing",
+  "kinetic"
 ]
 
-# you add controls here
-control 'devops' do                        # A unique ID for this control
-  impact 1.0                                # The criticality, if this control fails.
-  title 'DevOps tools setup'                # A human-readable title
+control 'devops' do
+  impact 1.0
+  title 'DevOps tools setup'
   desc 'An optional description...'
   # Installation and version
   tools.each do |key, value|
@@ -61,9 +49,9 @@ control 'devops' do                        # A unique ID for this control
           end
       end
   end
-  gem_packages.each do |package|
-    describe gem(package) do
-      it { should be_installed }
+  docker_images_ros.each do |ros|
+    describe docker_image("ros:"+ros+"-ros-core") do
+      it { should exist }
     end
   end
 end

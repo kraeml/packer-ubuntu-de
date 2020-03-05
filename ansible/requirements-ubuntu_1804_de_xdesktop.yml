@@ -5,3 +5,6 @@
 - src: gantsign.atom
 - src: gantsign.atom-packages
 - src: gantsign.golang
+- src: rarrais.ros
+- src: rarrais.ros2
+...

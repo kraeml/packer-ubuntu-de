@@ -3,50 +3,81 @@
   #become: yes
 
   gather_facts: yes
+  vars:
+    inspec_version: "4.18.100"
+    inspec_url:  "https://packages.chef.io/files/stable/inspec/{{inspec_version}}/ubuntu/18.04/inspec_{{inspec_version}}-1_amd64.deb"
+    inspec_name: inspec
 
   roles:
-    - role: geerlingguy.ruby
-      become: yes
-      ruby_install_gems_user: vagrant
-      ruby_install_gems:
-        - inspec
-        - serverspec
-        #- capybara
-        #- selenium-webdriver
-        - cucumber
-        - rspec
-        - sinatra
-        #- poltergeist
-        - rspec-expectations
-        - launchy
-        - rest-client
-        - test-kitchen
-        - kitchen-ansible
-        - kitchen-salt
-        - kitchen-vagrant
-        - kitchen-docker
-        - kitchen-sync
-        - kitchen-verifier-serverspec
-        #- kitchen-lxc
-        - kitchen-inspec
-        #- fog
-        #- foodcritic
-        #- thor-foodcritic
-      tags:
-        - ruby
+    #- role: geerlingguy.ruby
+    #  become: yes
+    #  ruby_install_gems_user: vagrant
+    #  ruby_install_gems:
+    #    - inspec
+    #    - serverspec
+    #    #- capybara
+    #    #- selenium-webdriver
+    #    - cucumber
+    #    - rspec
+    #    - sinatra
+    #    #- poltergeist
+    #    - rspec-expectations
+    #    - launchy
+    #    - rest-client
+    #    - test-kitchen
+    #    - kitchen-ansible
+    #    - kitchen-salt
+    #    - kitchen-vagrant
+    #    - kitchen-docker
+    #    - kitchen-sync
+    #    - kitchen-verifier-serverspec
+    #    #- kitchen-lxc
+    #    - kitchen-inspec
+    #    #- fog
+    #    #- foodcritic
+    #    #- thor-foodcritic
+    #  tags:
+    #    - ruby
     - role: ThorstenS-linux.packer-io
       become: yes
-      packer_version: 1.4.5
+      packer_version: 1.5.4
       tags:
         - packer
-    - role: viniciusfs.vagrant
-      become: yes
-      vagrant_version: 2.2.6
-      tags:
-        - vagrant
+    #- role: viniciusfs.vagrant
+    #  become: yes
+    #  vagrant_version: 2.2.7
+    #  tags:
+    #    - vagrant
   tasks:
+    - name: Pull ROS-core docker images
+      docker_image:
+        name: "ros:{{item}}-ros-core"
+        source: pull
+      with_items:
+        - melodic
+        - dashing
+        - kinetic
+
     - name: Ensure devops is marked
       become: yes
       file:
         path: /etc/kraeml_devops
         state: touch
+
+    - name: Check if inspec is installed
+      become: yes
+      command: dpkg-query -W inspec
+      register: inspec_check_deb
+      failed_when: inspec_check_deb.rc > 1
+      changed_when: inspec_check_deb.rc == 1
+
+    - name: Download inspec
+      get_url:
+        url: "{{ inspec_url }}"
+        dest: "/tmp/{{ inspec_name }}.deb"
+      when: inspec_check_deb.rc == 1
+
+    - name: Install inspec
+      become: yes
+      apt: deb="/tmp/{{ inspec_name }}.deb"
+      when: inspec_check_deb.rc == 1

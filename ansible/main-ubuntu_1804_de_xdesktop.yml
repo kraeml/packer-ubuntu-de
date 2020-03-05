@@ -1,5 +1,30 @@
 ---
   - hosts: all
+    vars:
+      ros_user:
+          name: "{{ansible_user_id}}"
+          group: "{{ansible_user_id}}"
+      ros2_user:
+          name: "{{ansible_user_id}}"
+          group: "{{ansible_user_id}}"
+      ros_configuration: desktop-full
+      ros_distribution: melodic
+      ros2_distribution: dashing
+      catkin_ws: "catkin_ws_{{ros_distribution}}"
+      dev_ws: "catkin_ws_{{ros2_distribution}}"
+      ros_packages:
+        - ros-base
+        - urdf
+        - tf
+        - turtlebot3-navigation
+        - turtlebot3
+        - gazebo-ros
+        - ros-tutorials
+        - rqt
+        - rqt-common-plugins
+        - turtlesim
+      ros2_packages: []
+
     roles:
     - role: gantsign.xdesktop
       become: yes
@@ -8,12 +33,16 @@
       lightdm_autologin_user: vagrant
       tags:
         - desktop
-        #
-        # Install Atom editor
+    - role: rarrais.ros
+      become: yes
+    - role: rarrais.ros2
+      become: yes
+    #
+    # Install Atom editor
     - role: gantsign.atom
       become: yes
       users:
-        - username: vagrant
+        - username: "{{ ansible_user_id }}"
           #atom_packages:
           #  - editorconfig
           #  - minimap
@@ -116,6 +145,7 @@
               - file-roller
               - clang
               - texworks
+              - gnome-terminal
             state: present
             update_cache: yes
             cache_valid_time: 3600
@@ -127,3 +157,23 @@
             - "gsettings set org.gnome.settings-daemon.plugins.power button-power 'shutdown'"
       tags:
         - desktop
+
+    # Ros Abschnitt
+    - name: Set Alias for ros1/2
+      lineinfile:
+        path: "{{ansible_user_dir}}/.bashrc"
+        line: 'alias initros_{{item.dist}}="\1; source /home/vagrant/catkin_ws_{{item.dist}}/{{item.path}}/setup.bash"'
+        regexp: '^(source /opt/ros/{{item.dist}}/setup.bash)'
+        backrefs: yes
+      with_items:
+        - dist: melodic
+          path: devel
+        - dist: dashing
+          path: install
+    - name: Remove ros setup
+      lineinfile:
+        path: "{{ansible_user_dir}}/.bashrc"
+        state: absent
+        regexp: '^source.*{{item}}.*$'
+      with_items:
+        - catkin

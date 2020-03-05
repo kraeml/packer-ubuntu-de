@@ -42,8 +42,4 @@ control 'de' do
   describe command('cat /etc/timezone') do
     its('stdout') {should match 'Europe/Berlin'}
   end
-  describe user('hugo') do
-    it { should exist }
-    its('uid') { should eq 5000 }
-  end
 end

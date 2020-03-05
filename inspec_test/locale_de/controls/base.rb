@@ -39,7 +39,8 @@ packages = [
   "nmap",
   "whois",
   "ipcalc",
-  "dnsutils"
+  "dnsutils",
+  "rename"
 ]
 
 control 'base' do
@@ -50,5 +51,12 @@ control 'base' do
     describe package(package) do
       it { should be_installed }
     end
+  end
+  describe file('/home/vagrant/.bash_prompt') do
+    it { should be_file }
+  end
+  describe user('hugo') do
+    it { should exist }
+    its('uid') { should eq 5000 }
   end
 end

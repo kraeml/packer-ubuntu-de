@@ -1,7 +1,8 @@
 ---
-- hosts: all
-  #become: yes
 
+# [%ansible_managed%]
+
+- hosts: all
   gather_facts: yes
 
   #roles:
@@ -10,7 +11,18 @@
     #  packer_version: 1.4.5
     #  tags:
     #    - packer
+
   tasks:
     - name: Say somthing
       debug:
         msg: Hello SA
+
+    - name: Klone Beispieldateien
+      git:
+        repo: https://gitlab.franken.de/kraeml/Tuxcademy-Grundlagen-Uebungen.git
+        dest: /home/vagrant/dateien
+
+    - name: Holen der dnsmasq.conf Beispieldateie
+      get_url:
+        url: https://raw.githubusercontent.com/imp/dnsmasq/master/dnsmasq.conf.example
+        dest: /home/vagrant/dateien/dnsmasq.conf.example

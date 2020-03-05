@@ -53,11 +53,11 @@
           - fonts-powerline
           - nano
           - screen
+          - byobu
           - htop
           - tree
           - rsync
           - sqlite
-          #- lvm2
           - python3
           - python
           - python3-pip
@@ -66,26 +66,27 @@
           - python-virtualenv
           - python3-dev
           - python-dev
-          #- python3-pexpect
-          #- python-pexpect
-          #- python3-winrm
-          #- python-winrm
-          #- libffi-dev
-          #- libssl-dev
-          #- cowsay
           - sshpass
           - avahi-daemon
           - avahi-utils
           - nmap
           - whois
-          #- proftpd-basic
           - ipcalc
           - dnsutils
           - shellcheck
           - bats
+          - python3-apt
+          - python-apt
+          - kpartx
+          - gdisk
+          - fdisk
+          - btrfs-tools
+          - rename
         state: present
         update_cache: yes
         cache_valid_time: 3600
+      tags:
+        - install
 
     - name: Git config
       git_config:
@@ -94,9 +95,9 @@
         scope: global
       with_items:
         - name: "user.email"
-          value: "vagrant@example.com"
+          value: "{{ ansible_user_id }}@example.com"
         - name: "user.name"
-          value: "vagrant"
+          value: "{{ ansible_user_id }}"
         - name: "core.editor"
           value: "vim"
         - name: "push.default"
@@ -117,6 +118,101 @@
         regexp: '^caption always'
         line: 'caption always "%{rw} * | %H * $LOGNAME | %{bw}%c %D | %{-}%-Lw%{rw}%50>%{rW}%n%f* %t %{-}%+Lw%<"'
 
+    # ToDo: insert .bash_prompt and .profile add lines to source it
+    - name: Copy using inline content
+      copy:
+        content: |
+            # @gf3’s Sexy Bash Prompt, inspired by “Extravagant Zsh Prompt”
+            # Shamelessly copied from https://github.com/gf3/dotfiles
+
+            default_username='unknown'
+            OSNAME="$(grep 'DISTRIB_CODENAME' /etc/lsb-release | cut -d = -f 2) "
+            PROMPTCHAR='\$'
+
+            if [[ $COLORTERM = gnome-* && $TERM = xterm ]] && infocmp gnome-256color >/dev/null 2>&1; then
+              export TERM=gnome-256color
+            elif infocmp xterm-256color >/dev/null 2>&1; then
+              export TERM=xterm-256color
+            fi
+
+            if tput setaf 1 &> /dev/null; then
+              tput sgr0
+              if [[ $(tput colors) -ge 256 ]] 2>/dev/null; then
+                BLUE=$(tput setaf 4)
+                MAGENTA=$(tput setaf 9)
+                ORANGE=$(tput setaf 172)
+                GREEN=$(tput setaf 70)
+                PURPLE=$(tput setaf 141)
+              else
+                BLUE=$(tput setaf 4)
+                MAGENTA=$(tput setaf 5)
+                ORANGE=$(tput setaf 3)
+                GREEN=$(tput setaf 2)
+                PURPLE=$(tput setaf 1)
+
+              fi
+              BOLD=$(tput bold)
+              RESET=$(tput sgr0)
+              else
+                BLUE="\033[1;34m"
+                MAGENTA="\033[1;31m"
+                ORANGE="\033[1;33m"
+                GREEN="\033[1;32m"
+                PURPLE="\033[1;35m"
+                BOLD=""
+                RESET="\033[m"
+              fi
+
+
+            function git_info() {
+              # check if we're in a git repo
+              git rev-parse --is-inside-work-tree &>/dev/null || return
+
+              # quickest check for what branch we're on
+              branch=$(git symbolic-ref -q HEAD | sed -e 's|^refs/heads/||')
+
+              # check if it's dirty (via github.com/sindresorhus/pure)
+              dirty=$(git diff --quiet --ignore-submodules HEAD &>/dev/null; [ $? -eq 1 ]&& echo -e "*")
+
+              echo "$RESET$BOLD on $PURPLE$branch$dirty"
+            }
+
+            # Only show username/host if not default
+            function usernamehost() {
+              if [ "$USER" != $default_username ]; then
+                echo "${BLUE}${OSNAME}${MAGENTA}$USER${RESET}${BOLD}@${ORANGE}$HOSTNAME${RESET}${BOLD} in ";
+              else
+                echo "${BLUE}${OSNAME}";
+              fi
+            }
+
+            # iTerm Tab and Title Customization and prompt customization
+            # http://sage.ucsc.edu/xtal/iterm_tab_customization.html
+
+            # Put the string " [bash]   hostname::/full/directory/path"
+            # in the title bar using the command sequence
+            # \[\e]2;[bash]   \h::\]$PWD\[\a\]
+
+            # Put the penultimate and current directory
+            # in the iterm tab
+            # \[\e]1;\]$(basename $(dirname $PWD))/\W\[\a\]
+
+
+            # show git info only on macOS, don't slow down on ARM devices
+            if [ "${OSNAME}" = bionic ]; then
+              PS1="\[\e]2;$PWD\[\a\]\[\e]1;\]$(basename "$(dirname "$PWD")")/\W\[\a\]${BOLD}$(usernamehost)\[$GREEN\]\w\$(git_info)\[$RESET\]\[$BOLD\]\n${PROMPTCHAR} \[$RESET\]"
+            else
+              PS1="\[\e]2;$PWD\[\a\]\[\e]1;\]$(basename "$(dirname "$PWD")")/\W\[\a\]${BOLD}$(usernamehost)\[$GREEN\]\w\[$RESET\]\[$BOLD\]\n${PROMPTCHAR} \[$RESET\]"
+            fi
+        dest: "{{ansible_user_dir}}/.bash_prompt"
+
+    - name: configure profile with profile
+      blockinfile:
+        path: "{{ansible_user_dir}}/.profile"
+        block: |
+          if [ -f ~/.bash_prompt ]; then
+            . ~/.bash_prompt
+          fi
     #- name: configure bashrc with screen
     #  blockinfile:
     #    path: /home/vagrant/.bashrc
@@ -126,3 +222,57 @@
     #         echo "SSH no active"
     #         /usr/bin/screen -S sshscreen -D -RR  && exit
     #       fi
+    - block:
+      - name: "Create tuxcademy user(s)"
+        become: yes
+        user:
+          name: "{{item.name}}"
+          shell: /bin/bash
+          comment: "Tuxcademy user"
+          uid: "{{item.uid}}"
+        with_items:
+          - name: hugo
+            uid: 5000
+          - name: susi
+            uid: 5001
+      - name: "Create tuxcademy folders"
+        become: yes
+        file:
+          path: "/home/hugo/{{item.path}}"
+          state: directory
+          owner: "{{item.owner}}"
+          group: "{{item.owner}}"
+        with_items:
+          - path: briefe
+            owner: hugo
+          - path: romane
+            owner: hugo
+          - path: briefe
+            owner: susi
+          - path: romane
+            owner: susi
+          - path: prog
+            owner: hugo
+
+      - name: "Create tuxcademy files"
+        become: yes
+        file:
+          path: "/home/{{item.owner}}/{{item.path}}"
+          state: touch
+          owner: "{{item.owner}}"
+          group: "{{item.owner}}"
+        with_items:
+          - path: romane/werther.txt
+            owner: hugo
+          - path: briefe/brief.tab
+            owner: hugo
+          - path: briefe/omabrief
+            owner: hugo
+
+      - name: "Create tuxcademy special files"
+        become: yes
+        file:
+          path: /home/hugo/datei.txt
+          state: touch
+          owner: "{{ansible_user_id}}"
+          group: "{{ansible_user_gid}}"
