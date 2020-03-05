@@ -20,7 +20,7 @@ no-cloud:
 test_inspec:
 	vagrant up
 	echo $(CONTROLS)
-	LC_MESSAGES=C inspec exec \
+	LC_MESSAGES=C /opt/inspec/bin/inspec exec \
 		--controls=$(CONTROLS) \
 		-t ssh://vagrant@$$(vagrant ssh-config \
 			| grep HostName \
@@ -36,7 +36,7 @@ test_inspec:
 
 test_devsec:
 	vagrant up
-	LC_MESSAGES=C inspec exec \
+	LC_MESSAGES=C /opt/inspec/bin/inspec exec \
 		-t ssh://vagrant@$$(vagrant ssh-config \
 			| grep HostName \
 			| cut -d 'e' -f 2 \
@@ -56,3 +56,6 @@ test: vagrant_box_clean test_inspec
 vagrant_box_clean:
 	vagrant destroy --force 2>/dev/null || true
 	vagrant box remove --force file://builds/$(BASE)/virtualbox-$(BASE).box 2>/dev/null || true
+
+electronic:
+	ansible-playbook --skip-tags dependencies --extra-vars BASE_NAME=de_electronic_jupyter build.yml
