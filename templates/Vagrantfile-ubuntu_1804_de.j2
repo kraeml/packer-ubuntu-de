@@ -1,6 +1,8 @@
 # -*- mode: ruby -*-
 # vi: set ft=ruby :
 
+# [%ansible_managed%]
+
 # All Vagrant configuration is done below. The "2" in Vagrant.configure
 # configures the configuration version (we support older styles for
 # backwards compatibility). Please don't change it unless you know what
@@ -17,7 +19,7 @@ Vagrant.configure("2") do |config|
   # Disable automatic box update checking. If you disable this, then
   # boxes will only be checked for updates when the user runs
   # `vagrant box outdated`. This is not recommended.
-  # config.vm.box_check_update = false
+  config.vm.box_check_update = false
 
   # Create a forwarded port mapping which allows access to a specific port
   # within the machine from a port on the host machine. In the example below,
@@ -54,7 +56,7 @@ Vagrant.configure("2") do |config|
   {% endif -%}
   {% if 'electronic' in CONTROLS -%}
     {% set ip = 60 -%}
-    {% set hostname = "ina" -%}
+    {% set hostname = "tinf" -%}
   {% endif -%}
   {% if 'jupyter' in CONTROLS -%}
     {% set ip = ip + 1 -%}

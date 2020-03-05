@@ -1,6 +1,7 @@
 *.retry
 builds/
 builds-config/
+builds-config-old/*
 output-virtualbox-ovf/
 virtualbox-ovf/
 .vagrant/
