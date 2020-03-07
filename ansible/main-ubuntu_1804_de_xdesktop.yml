@@ -159,6 +159,14 @@
         - desktop
 
     # Ros Abschnitt
+    - name: Workaround für amd64 in ros2 apt source
+      become: yes
+      lineinfile:
+        path: /etc/apt/sources.list.d/ros2-latest.list
+        line: '\1[arch=amd64] \2'
+        regexp: '^(deb ).*(http.*$)'
+        backrefs: yes
+
     - name: Set Alias for ros1/2
       lineinfile:
         path: "{{ansible_user_dir}}/.bashrc"
