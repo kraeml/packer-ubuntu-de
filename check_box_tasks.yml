@@ -10,12 +10,12 @@
   - name: "check_box_tasks: Display box info"
     debug:
       var: box_info
-      verbosity: 1
+      verbosity: 0
 
   - name: "check_box_tasks: Display box path variable"
     debug:
       var: box_ovf_path
-      verbosity: 1
+      verbosity: 0
 
   - name: "check_box_tasks: Test box exists"
     command: "ls -ld {{box_ovf_path}}"

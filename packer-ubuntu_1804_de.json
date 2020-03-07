@@ -43,13 +43,24 @@
       "galaxy_file": "{{user `requirements`}}",
       "extra_arguments": [
           "--skip-tags={{ user `ansible_skip_tags` }}",
-          "--user=vagrant"
+          "--user=vagrant",
+          "--extra-vars='ansible_python_interpreter=/usr/bin/python3'"
       ]
     },
     {
       "type": "shell",
       "execute_command": "echo 'vagrant' | {{.Vars}} sudo -S -E bash '{{.Path}}'",
       "script": "scripts/cleanup.sh"
+    },
+    {
+      "type": "inspec",
+      "extra_arguments": [
+        "--controls", "{{user `controls`}}",
+        "--password", "vagrant"
+      ],
+      "user": "vagrant",
+      "inspec_env_vars": [ "LC_MESSAGES=C" ],
+      "profile": "./inspec_test/locale_de/"
     },
     {
       "environment_vars": [

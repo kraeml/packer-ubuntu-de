@@ -1,8 +1,11 @@
 name: locale_de
-title: InSpec Profile
-maintainer: The Authors
-copyright: The Authors
-copyright_email: you@example.com
+title: Ubuntu 18.04 de Test
+maintainer: Michael Schaar
+copyright: Michael Schaar
+copyright_email: kraeml@sesamestreet.franken.de
 license: Apache-2.0
-summary: An InSpec Compliance Profile
-version: 0.1.0
+summary: An Compliance Test für Ubuntu 18.04
+version: 1.0.0
+supports:
+  - platform-name: ubuntu
+    release: 18.04

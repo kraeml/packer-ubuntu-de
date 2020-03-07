@@ -55,7 +55,8 @@ test: vagrant_box_clean test_inspec
 
 vagrant_box_clean:
 	vagrant destroy --force 2>/dev/null || true
-	vagrant box remove --force file://builds/$(BASE)/virtualbox-$(BASE).box 2>/dev/null || true
+	vagrant box remove --force file://builds/$(BASE)/virtualbox-$(BASE).box || true
+	vagrant box add ./builds/$(BASE)/virtualbox-$(BASE).box --name file://builds/$(BASE)/virtualbox-$(BASE).box
 
 electronic:
 	ansible-playbook --skip-tags dependencies --extra-vars BASE_NAME=de_electronic_jupyter build.yml
