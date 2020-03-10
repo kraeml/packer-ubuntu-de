@@ -158,7 +158,7 @@
         - name: Get arduino IDE
           become: yes
           unarchive:
-              src: https://downloads.arduino.cc/arduino-1.8.10-linux64.tar.xz
+              src: https://downloads.arduino.cc/arduino-1.8.12-linux64.tar.xz
               # If remote_src=no (default), local path to archive file to copy to the target server; can be absolute or relative. If remote_src=yes, path on the target server to existing archive file to unpack.,If remote_src=yes and src contains ://, the remote machine will download the file from the url first. (version_added 2.0)
               dest: /opt/arduino
               # Remote absolute path where the archive should be unpacked
