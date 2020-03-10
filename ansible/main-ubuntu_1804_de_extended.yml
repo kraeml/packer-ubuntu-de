@@ -8,7 +8,7 @@
     - name: ubuntu
       release: bionic
     - name: debian
-      release: stretch
+      release: stable
     #- alpine
     #- centos
     #- fedora
@@ -87,6 +87,13 @@
             replace: "apt-transport-https,ssh,vim,manpages,man-db,bash-completion,whois,acl,python,python-apt,dnsutils,nmap,nginx,mongodb,python-flask,python3-flask,tree,kpartx,gdisk,btrfs-tools"
         #ignore_errors: yes
 
+      - name: "Extend debian template without mongodb"
+        become: yes
+        replace:
+          regexp: "^openssh-server.*$"
+          dest: "/usr/share/lxc/templates/lxc-debian"
+          replace: "openssh-server,iputils-ping,apt-transport-https,ssh,vim,manpages,man-db,bash-completion,whois,acl,python,python-apt,dnsutils,nmap,nginx,python-flask,python3-flask,tree"
+
       - name: Create a stopped container
         become: yes
         lxc_container:
@@ -109,26 +116,27 @@
         #ignore_errors: yes
       tags:
         - lxc-dev
-    - block:
-      - name: "Start docker deamon"
-        become: yes
-        service:
-          name: docker
-          state: started
-      - name: Clone codespace.io
-        git:
-          dest: "{{ansible_user_dir}}/codespace"
-          repo: https://github.com/codespaces-io/codespaces.git
-      - name: Pull codespace.io
-        become: yes
-        command: docker-compose pull
-        args:
-          chdir: "{{ansible_user_dir}}/codespace/cs-ansible"
-      tags:
-        - codespace
 
-    - name: Workaround docker-compose
-      become: yes
-      pip:
-        name: docker-compose
-        executable: pip3
+    #- block:
+    #  - name: "Start docker deamon"
+    #    become: yes
+    #    service:
+    #      name: docker
+    #      state: started
+    #  - name: Clone codespace.io
+    #    git:
+    #      dest: "{{ansible_user_dir}}/codespace"
+    #      repo: https://github.com/codespaces-io/codespaces.git
+    #  - name: Pull codespace.io
+    #    become: yes
+    #    command: docker-compose pull
+    #    args:
+    #      chdir: "{{ansible_user_dir}}/codespace/cs-ansible"
+    #  tags:
+    #    - codespace
+
+    #- name: Workaround docker-compose
+    #  become: yes
+    #  pip:
+    #    name: docker-compose
+    #    executable: pip3

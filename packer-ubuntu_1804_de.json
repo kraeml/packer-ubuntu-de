@@ -31,9 +31,9 @@
       "type": "shell",
       "inline": [
         "sleep 10",
-        "echo Hello again",
-        "sudo sed -i 's/nameserver.*$/nameserver 9.9.9.9/g' /etc/resolv.conf"
-
+        "sudo sed -i -E 's/^#FallbackDNS=.*$/FallbackDNS=9.9.9.9/g' /etc/systemd/resolved.conf",
+        "sudo sed -i -E 's/^#DNS=.*$/DNS=9.9.9.9/g' /etc/systemd/resolved.conf",
+        "echo Hello again"
       ],
       "expect_disconnect": true
     },
