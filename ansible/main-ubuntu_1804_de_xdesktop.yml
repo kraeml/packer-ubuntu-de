@@ -43,7 +43,9 @@
       become: yes
       users:
         - username: "{{ ansible_user_id }}"
-          #atom_packages:
+          atom_packages:
+            - atom-ros
+          #  - ansible-snippets
           #  - editorconfig
           #  - minimap
           #  - linter
@@ -146,6 +148,8 @@
               - clang
               - texworks
               - gnome-terminal
+              - firefox
+              - firefox-locale-de
             state: present
             update_cache: yes
             cache_valid_time: 3600
@@ -159,6 +163,13 @@
         - desktop
 
     # Ros Abschnitt
+    - name: "Install desktop needed packages"
+      become: yes
+      apt:
+        name:
+          - ros-melodic-catkin
+          - python-catkin-tools
+
     - name: Workaround für amd64 in ros2 apt source
       become: yes
       lineinfile:
@@ -170,7 +181,7 @@
     - name: Set Alias for ros1/2
       lineinfile:
         path: "{{ansible_user_dir}}/.bashrc"
-        line: 'alias initros_{{item.dist}}="\1; source /home/vagrant/catkin_ws_{{item.dist}}/{{item.path}}/setup.bash"'
+        line: 'alias initros_{{item.dist}}="\1"'
         regexp: '^(source /opt/ros/{{item.dist}}/setup.bash)'
         backrefs: yes
       with_items:
@@ -185,3 +196,47 @@
         regexp: '^source.*{{item}}.*$'
       with_items:
         - catkin
+
+    - name: Setup moveit directory
+      file:
+        path: "{{ansible_user_dir}}/ws_moveit/src"
+        state: directory
+        recurse: yes
+
+    - name: Create A Catkin Workspace and Download MoveIt Source
+      shell: source /opt/ros/{{ ros_distribution }}/setup.bash && wstool init . && wstool merge -t . https://raw.githubusercontent.com/ros-planning/moveit/master/moveit.rosinstall && wstool update -t .
+      args:
+        chdir: "{{ ansible_user_dir}}/ws_moveit/src"
+        executable: /bin/bash
+
+    - name:
+      git:
+        dest: "{{ ansible_user_dir}}/ws_moveit/src/{{item.path}}"
+        repo: "{{item.repo}}"
+        version: "{{item.version}}"
+        update: no
+      with_items:
+        - repo: https://github.com/ros-planning/moveit_tutorials.git
+          version: master
+          path: moveit_tutorials
+        - repo:  https://github.com/ros-planning/panda_moveit_config.git
+          version: melodic-devel
+          path: panda_moveit_config
+
+    - name: Build your Catkin Workspace
+      shell: source /opt/ros/{{ ros_distribution }}/setup.bash && rosdep install -y --from-paths . --ignore-src --rosdistro melodic
+      args:
+        chdir: "{{ ansible_user_dir}}/ws_moveit/src"
+        executable: /bin/bash
+
+    - name: Config your Catkin Workspace
+      shell: source /opt/ros/{{ ros_distribution }}/setup.bash && catkin config --extend /opt/ros/{{ ros_distribution }} --cmake-args -DCMAKE_BUILD_TYPE=Release
+      args:
+        chdir: "{{ ansible_user_dir}}/ws_moveit/"
+        executable: /bin/bash
+
+    - name: Build your Catkin Workspace
+      shell: source /opt/ros/{{ ros_distribution }}/setup.bash && catkin build
+      args:
+        chdir: "{{ ansible_user_dir}}/ws_moveit/"
+        executable: /bin/bash
