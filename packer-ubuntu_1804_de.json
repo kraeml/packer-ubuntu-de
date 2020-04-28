@@ -9,7 +9,7 @@
 			"shutdown_command": "echo 'vagrant' | sudo -S shutdown -P now",
       "guest_additions_path": "VBoxGuestAdditions_{{.Version}}.iso",
       "vboxmanage": [
-        ["modifyvm", "{{.Name}}", "--memory", "4096"],
+        ["modifyvm", "{{.Name}}", "--memory", "8192"],
         ["modifyvm", "{{.Name}}", "--cpus", "4"],
         ["modifyvm", "{{.Name}}", "--vram", "32"]
       ]

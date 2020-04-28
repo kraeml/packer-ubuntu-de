@@ -26,3 +26,24 @@
       get_url:
         url: https://raw.githubusercontent.com/imp/dnsmasq/master/dnsmasq.conf.example
         dest: /home/vagrant/dateien/dnsmasq.conf.example
+
+    - name: Holen der dnsmasq.conf Beispieldateie
+      get_url:
+        url: "http://ftp.de.debian.org/debian/pool/main/h/hello/{{item}}"
+        dest: "/home/vagrant/dateien/{{item}}"
+      with_items:
+        - hello_2.10-2_amd64.deb
+        - hello_2.10-2.dsc
+        - hello_2.10.orig.tar.gz
+        - hello_2.10-2.debian.tar.xz
+
+    - name: Installation von hello
+      become: yes
+      apt:
+        name:
+          - hello
+          - debsums
+          - debian-keyring
+        state: latest
+        update_cache: yes
+        cache_valid_time: 3600

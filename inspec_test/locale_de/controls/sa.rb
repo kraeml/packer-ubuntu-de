@@ -1,25 +1,47 @@
 # encoding: utf-8
 # copyright: 2017, The Authors
 
-# TODO:
-# - Test git environment
-# - Test login shell
-# - Test screen config
+# Ansible managed: /home/michl/Dokumente/Schule/2_Semester/BSA2/SA_KA/SA2/templates/vagrant-maschine/controls/base.rb
 
+title 'Basis Test der Prüfungsmaschine'
 
-title 'SA Section'
+#ToDo Interfaces via Variablen
+interfaces = {
+  'enp0s3' => {
+    'ip' => '10.0.2.15'
+  },
+  'enp0s3' => {
+    'ip' => '10.0.2.15'
+  },
+  'enp0s3' => {
+    'ip' => '10.0.2.15'
+  },
+  'docker0' => {
+    'ip' => '172.17.0.1'
+  }
+}
 
-packages = [
-  "vim"
-]
-
-control 'sa' do
+control "sa" do
   impact 1.0
-  title 'SA setup'
-  desc "An optional description..."
-  packages.each do |package|
-    describe package(package) do
-      it { should be_installed }
+  title 'Base Verzeichnisse und Dateien'
+  desc 'Basis Test der Maschine'
+  describe file('/home/vagrant/dateien') do
+    it { should exist }
+    it { should be_directory }
+  end
+  describe file('/home/vagrant/dateien/dnsmasq.conf.example') do
+    it { should be_file }
+  end
+  describe command('hostname') do
+    its('stdout') { should match "de"}
+  end
+  describe interface('enp0s3') do
+    it { should be_up }
+    #its('ipv4_addresses') { should include '10.0.2.15' }
+  end
+  interfaces.each do | interface, config|
+    describe bash('ip a s ' + interface) do
+      its('stdout') { should include config['ip'] }
     end
   end
 end
