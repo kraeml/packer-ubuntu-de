@@ -82,6 +82,10 @@
           - fdisk
           - btrfs-tools
           - rename
+          # ToDo unterschiede zum Paket traceroute feststellen
+          - inetutils-traceroute
+          - haveged
+          - asciinema
         state: present
         update_cache: yes
         cache_valid_time: 3600
