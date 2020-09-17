@@ -10,7 +10,8 @@
       ros_configuration: desktop-full
       ros_distribution: melodic
       ros2_distribution: dashing
-      catkin_ws: "catkin_ws_{{ros_distribution}}"
+      #ros_workspaces:
+      #  catkin_ws: "catkin_ws_{{ros_distribution}}"
       dev_ws: "catkin_ws_{{ros2_distribution}}"
       ros_packages:
         - ros-base
@@ -169,6 +170,15 @@
         name:
           - ros-melodic-catkin
           - python-catkin-tools
+
+    - name: stat catkin_ws
+      stat:
+        path: "{{ansible_user_dir}}/catkin_ws"
+      register: catkin_ws_stat
+
+    - name: Move catkin_ws to catkin_ws_melodic
+      command: "mv {{ansible_user_dir}}/catkin_ws {{ansible_user_dir}}/catkin_ws_{{ros_distribution}}"
+      when: catkin_ws_stat.stat.exists
 
     - name: Workaround für amd64 in ros2 apt source
       become: yes

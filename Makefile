@@ -59,13 +59,13 @@ vagrant_box_clean:
 	vagrant box add ./builds/$(BASE)/virtualbox-$(BASE).box --name file://builds/$(BASE)/virtualbox-$(BASE).box
 
 electronic:
-	ansible-playbook --skip-tags dependencies --extra-vars BASE_NAME=de_electronic_jupyter build.yml
+	time ansible-playbook --skip-tags dependencies --extra-vars BASE_NAME=de_electronic_jupyter build.yml
 
 base:
-	ansible-playbook --skip-tags dependencies --extra-vars BASE_NAME=de_base build.yml
+	time ansible-playbook --skip-tags dependencies --extra-vars BASE_NAME=de_base build.yml
 
 juyter:
-	ansible-playbook --skip-tags dependencies --extra-vars BASE_NAME=de_base_jupyter build.yml
+	time ansible-playbook --skip-tags dependencies --extra-vars BASE_NAME=de_base_jupyter build.yml
 
 xdesktop:
-	ansible-playbook --skip-tags dependencies --extra-vars BASE_NAME=de_base_jupyter_xdesktop build.yml
+	time ansible-playbook --skip-tags dependencies --extra-vars BASE_NAME=de_base_jupyter_xdesktop build.yml
