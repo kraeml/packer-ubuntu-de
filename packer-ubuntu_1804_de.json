@@ -114,15 +114,9 @@
         "keep_input_artifact": true
       },
       {
-        "type": "vagrant-s3",
-        "credentials": "/home/michl/.aws/credentials",
-        "profile": "packer-s3",
-        "region": "eu-central-1",
-        "bucket": "{{ user `my-bucket`}}",
-        "manifest": "vagrant/json/{{ user `box_organization` }}/{{ user `box_name` }}.json",
-        "box_dir":  "vagrant/boxes/{{ user `box_organization` }}/{{ user `box_name` }}",
-        "box_name": "{{ user `box_organization` }}/{{ user `box_name` }}",
-        "version":  "{{ user `version` }}"
+        "type": "vagrant-cloud",
+        "box_tag": "rdf/{{user `box_name`}}",
+        "version": "{{user `version`}}"
       }
     ]
   ],

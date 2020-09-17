@@ -9,6 +9,7 @@
         tags:
           - test_var
           - vagrantfile
+          - debug
 
       - name: "build: Create virtualbox-ubuntu_1804_xy"
         debug:
@@ -48,5 +49,6 @@
         tags:
           - test_var
           - vagrantfile
+          - debug
         #environment:
         #  http_proxy: "{{ansible_default_ipv4.address}}:8888"

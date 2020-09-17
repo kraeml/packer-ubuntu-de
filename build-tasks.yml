@@ -2,6 +2,29 @@
   debug:
     var: build_item
     verbosity: 1
+  tags:
+    - debug
+
+- name: Test if VAGRANT_CLOUD_TOKEN is set
+  shell: if [ -z ${VAGRANT_CLOUD_TOKEN+x} ]; then echo "unset"; else echo "set"; fi
+  register: shell_output
+  tags:
+    - debug
+
+- name: Set VAGRANT_CLOUD_TOKEN
+  set_fact:
+    VAGRANT_CLOUD_TOKEN: true
+  when: shell_output.stdout == "set"
+  ignore_errors: yes
+  tags:
+    - win-build
+    - debug
+
+- debug:
+    var: VAGRANT_CLOUD_TOKEN
+    verbosity: 1
+  tags:
+    - debug
 
 - name: Install dependencies
   become: yes
@@ -10,6 +33,43 @@
       - jq
   tags:
     - dependencies
+
+# Set a version for this new box.
+- name: Set version from ansible-vars
+  set_fact:
+    new_box_version: "{{versions}}"
+  when: versions != ""
+  tags:
+    - win-build
+    - debug
+
+- block:
+  - name: Get current box version from Vagrant.
+    uri:
+      url: https://app.vagrantup.com/api/v1/box/rdf/ubuntu_1804_{{ build_item["name"] }}
+      return_content: true
+    register: box_info
+
+  - name: Set the current version of the base box.
+    set_fact:
+      current_box_version: "{{ (box_info.content | from_json).current_version.version }}"
+
+  - name: Set the next minor version of the base box.
+    set_fact:
+      new_box_version: >-
+        {{ current_box_version.split('.')[0] }}.{{ current_box_version.split('.')[1] }}.{{ current_box_version.split('.')[2] | int + 1 }}
+
+  tags:
+    - win-build
+    - debug
+  when: versions == ""
+
+- name: Print info about current box.
+  debug:
+    msg: "Building new rdf/ubuntu1804-{{ build_item['name'] }} box version {{ new_box_version }}"
+  tags:
+    - win-build
+    - debug
 
 #ToDo: Start devpi-server with devpi-server --start --host 0.0.0.0
 #when not running:
@@ -37,6 +97,7 @@
   tags:
     - test_var
     - vagrantfile
+    - debug
 
 - name: "build-task: Start build info"
   debug:
@@ -81,6 +142,17 @@
     - vagrantfile
 
 - block:
+  - set_fact:
+      packer_json: packer-ubuntu_1804_de.json
+    when: VAGRANT_CLOUD_TOKEN
+    tags:
+      - debug
+
+  - debug:
+      var: packer_json
+    tags:
+      - debug
+
   - name: "build-task: build {{BASE}}"
     # Use BASE NOT box_name! The name box_name is double.
     shell: >
@@ -91,7 +163,7 @@
       -var "playbook={{playbook}}"
       -var "controls={{CONTROLS}}"
       -var "myipaddress={{ansible_default_ipv4.address}}"
-      packer-ubuntu_1804_de-no-cloud.json
+      {{ packer_json }}
     args:
       executable: /bin/bash
       chdir: ./

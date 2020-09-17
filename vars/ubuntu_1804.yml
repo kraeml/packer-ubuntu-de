@@ -1,7 +1,10 @@
 ---
   ovf_path: "{{ansible_user_dir}}/.vagrant.d/boxes/"
   BASE_NAME: "de"
-  base_version: "1.1.5"
+  base_version: "1.1.7"
+  versions: ""
+  packer_json: "packer-ubuntu_1804_de-no-cloud.json"
+  VAGRANT_CLOUD_TOKEN: false
   all:
     - de
     #- de_jupyter
@@ -25,7 +28,7 @@
     #- de_base_ina_jupyter_xdesktop
     #- de_electronic
     - de_electronic_jupyter
-    - de_sa
+    #- de_sa
 
 
 
